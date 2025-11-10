@@ -76,7 +76,7 @@ useEffect(() => {
               />
             )}
             <p>{movie.overview}</p>
-            <small>Julkaisuvuosi: {movie.release_date}</small>
+            <small>Julkaiss uvuosi: {movie.release_date}</small>
           </div>
         ))}
       </div>
