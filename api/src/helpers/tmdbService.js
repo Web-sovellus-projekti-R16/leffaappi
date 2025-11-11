@@ -74,7 +74,7 @@ export async function searchMoviesByGenre(genreName) {
             tmdb_id: movie.id,
             title: movie.title,
             overview: movie.overview,
-            genre: genreName,
+            genre: genreObj.name,
             poster_path: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null
         }))
     } catch (err) {
@@ -91,21 +91,33 @@ export async function searchMoviesByActor(actorName) {
             'Accept': 'application/json'
           },
           params: { query: actorName }
-        })
+        });
 
-        const person = response.data.results?.[0]
-        if (!person || !person.known_for) return []
+        const person = response.data.results?.[0];
+        if (!person || !person.known_for) return [];
 
-        return person.known_for.map(movie => ({
+        const genres = await fetchGenres();
+
+        const movies = person.known_for.map(movie => {
+          const movieGenres = (movie.genre_ids || [])
+            .map(id => genres.find(g => g.id === id)?.name)
+            .filter(Boolean);
+
+          return {
             tmdb_id: movie.id,
-            title: movie.title,
+            title: movie.title || movie.name,
             overview: movie.overview,
-            genre: null,
-            poster_path: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.cposter_path}` : null
-        }))
+            genres: movieGenres,
+            poster_path: movie.poster_path
+              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+              : null
+          };
+        });
+
+        return movies;
     } catch (err) {
-        console.error('TMDB actor search failed:', err.message)
-        return []
+        console.error('TMDB actor search failed:', err.message);
+        return [];
     }
 }
 
