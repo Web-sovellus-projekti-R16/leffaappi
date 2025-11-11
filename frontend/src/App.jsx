@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import './App.css';
-import MovieExplorer from '../components/MovieExplorer';
+import './App.css'
+import MovieExplorer from './components/MovieExplorer'
+
+function App() {
+return (
+    <MovieExplorer />
+  )
+  
+}
+
+export default App
 
 // function App() {
 //   const [query, setQuery] = useState("");
@@ -86,11 +95,4 @@ import MovieExplorer from '../components/MovieExplorer';
 //   );
 // }
 
-function App() {
-return (
-    <MovieExplorer />
-  )
-  
-}
-
-export default App;
+// export default App;

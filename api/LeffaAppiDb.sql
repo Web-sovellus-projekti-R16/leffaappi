@@ -27,11 +27,7 @@ create table account_group (
 
 create table movie (
 	id serial primary key,
-	title varchar(255) not null,
-	genre varchar(255),
-	overview text,
-	tmdb_id int not null,
-	poster_path varchar(100)
+	tmdb_id int not null
 );
 
 create table account_movie (
