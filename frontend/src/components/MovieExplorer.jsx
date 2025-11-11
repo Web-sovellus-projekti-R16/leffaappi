@@ -14,7 +14,7 @@ export default function MovieExplorer() {
         setError(null)
         setMovies([])
         try {
-            const res = await fetch('http://localhost:3001/movies/ontheatres')
+            const res = await fetch('http://localhost:3001/movies/nowplaying')
 
             if (!res.ok) throw new Error(`Server error: ${res.status}`)
             const data = await res.json()
