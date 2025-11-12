@@ -1,77 +1,75 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function MovieExplorer() {
-    const [movies, setMovies] = useState([])
-    const [title, setTitle] = useState('')
-    const [genre, setGenre] = useState('')
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [movies, setMovies] = useState([]);
+    const [searchBy, setSearchBy] = useState('title');
+    const [query, setQuery] = useState('');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         
         const fetchData = async () => {
-        setLoading(true)
-        setError(null)
-        setMovies([])
+        setLoading(true);
+        setError(null);
+        setMovies([]);
         try {
-            const res = await fetch('http://localhost:3001/movies/nowplaying')
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/nowplaying`);
 
-            if (!res.ok) throw new Error(`Server error: ${res.status}`)
-            const data = await res.json()
-            setMovies(Array.isArray(data) ? data : [data])
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            const data = await res.json();
+            setMovies(Array.isArray(data) ? data : [data]);
         } catch (err) {
-            console.error('Error occured while fetching movies:', err)
-            setError('Something went wrong. Please try again later.')
+            console.error('Error occured while fetching movies:', err);
+            setError('Something went wrong. Please try again later.');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }}
 
-        fetchData().catch(console.error)
+        fetchData().catch(console.error);
     }, [])
 
-    const fetchMovie = async (searchBy, queryString) => {
-        if (!queryString.trim() || !searchBy.trim()) return
-        setLoading(true)
-        setError(null)
-        setMovies([])
+    const fetchMovie = async () => {
+        if (!query.trim() || !searchBy.trim()) return;
+        setLoading(true);
+        setError(null);
+        setMovies([]);
         try {
-            const res = await fetch(`http://localhost:3001/movies/search/?${searchBy}=${queryString}`)
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/search/?${searchBy}=${query}`);
             if (res.status === 404) {
-                setError(`No movie found for: "${queryString}"`)
-                return
+                setError(`No movie found for: "${query}"`);
+                return;
             }
 
-            if (!res.ok) throw new Error(`Server error: ${res.status}`)
-            const data = await res.json()
-            setMovies(Array.isArray(data) ? data : [data])
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            const data = await res.json();
+            setMovies(Array.isArray(data) ? data : [data]);
         } catch (err) {
-            console.error('Error occured while fetching movies:', err)
-            setError('Something went wrong. Please try again later.')
+            console.error('Error occured while fetching movies:', err);
+            setError('Something went wrong. Please try again later.');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
     
 
     return (
         <div>
-            <input type='text' placeholder='Search by Title' value={title}
-                onChange={e => setTitle(e.target.value)}
-                onKeyDown={e => {
+            <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
+                <option value="title">Title</option>
+                <option value="genre">Genre</option>
+                <option value="actor">Actor</option>
+            </select>
+            <input type='text' placeholder={`Search by ${searchBy}`} value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        e.preventDefault()
-                        fetchMovie('title', e.target.value)
+                        e.preventDefault();
+                        fetchMovie();
                     }
                 }} />
 
-            <input type='text' placeholder='Search by Genre' value={genre}
-                onChange={e => setGenre(e.target.value)}
-                onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault()
-                        fetchMovie('genre', e.target.value)
-                    }
-                }} />
+            <button onClick={fetchMovie}>Search</button>
             
             <h1>Movies</h1>
 
