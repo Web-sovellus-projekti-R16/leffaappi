@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import './App.css'
-import MovieExplorer from './components/MovieExplorer'
 import Navig from "./components/Navig"
 import {Route, Routes} from 'react-router-dom'
 import Mainpage from "./pages/Mainpage"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
+import MovieExplorer from "./components/MovieExplorer"
 import Home from "./pages/user/Home"
 import Groups from "./pages/user/Groups"
 import Favorites from "./pages/user/Favorites"
