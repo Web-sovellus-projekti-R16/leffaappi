@@ -11,6 +11,7 @@ import Groups from "./pages/user/Groups"
 import Favorites from "./pages/user/Favorites"
 import Account from "./pages/user/Account"
 import Search from "./pages/Search"
+import NowPlaying from "./components/nowPlaying.jsx";
 
 
 const loggedin = false;
@@ -26,6 +27,7 @@ return (
         <Route path="/register" element={<Register />} />
 
         <Route path="/movies" element={<MovieExplorer />} />
+        <Route path="/nowplaying" element={<NowPlaying />} />
 
         <Route path="/home" element={<Home />} />
         <Route path="/groups" element={<Groups />} />
