@@ -1,0 +1,47 @@
+.favorites-container {
+  padding: 2rem;
+}
+
+.favorites-back {
+  color: #4da6ff;
+  text-decoration: none;
+}
+
+.favorites-back:hover {
+  text-decoration: underline;
+}
+
+.favorites-title {
+  margin-top: 1rem;
+}
+
+.favorites-search {
+  padding: 0.5rem;
+  width: 250px;
+  margin-top: 1rem;
+}
+
+.favorites-list {
+  margin-top: 1.5rem;
+}
+
+.favorites-item {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.favorites-delete-btn {
+  background-color: #f55;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.favorites-delete-btn:hover {
+  background-color: #d44;
+}

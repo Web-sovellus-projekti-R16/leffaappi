@@ -1,0 +1,22 @@
+.mainpage-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.mainpage-register-text {
+  margin-bottom: 1rem;
+}
+
+.mainpage-register-link {
+  color: #4da6ff;
+  text-decoration: none;
+}
+
+.mainpage-register-link:hover {
+  text-decoration: underline;
+}
+
+.home-explorer-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}

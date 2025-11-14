@@ -1,0 +1,20 @@
+.navbar {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #222;
+}
+
+.navlink {
+  color: white !important;
+  text-decoration: none !important;
+  padding: 0.5rem 1rem;
+}
+
+.navlink:hover {
+  background: #333;
+}
+
+.account {
+  margin-left: auto;
+}

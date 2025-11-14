@@ -1,10 +1,38 @@
 import { useEffect, useState } from "react";
-import './App.css';
-import MovieExplorer from './components/MovieExplorer';
+import './App.css'
+import MovieExplorer from './components/MovieExplorer'
+import Navig from "./components/Navig"
+import {Route, Routes} from 'react-router-dom'
+import Mainpage from "./pages/Mainpage"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Home from "./pages/user/Home"
+import Groups from "./pages/user/Groups"
+import Favorites from "./pages/user/Favorites"
+import Account from "./pages/user/Account"
+import Search from "./pages/Search"
+
+
+const loggedin = false;
 
 function App() {
 return (
-    <MovieExplorer />
+  <>
+    <Navig />
+    <Routes>
+        <Route path="/" element={loggedin ? <Home /> : <Mainpage />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/movies" element={<MovieExplorer />} />
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/groups" element={<Groups />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/account" element={<Account />} />
+    </Routes>
+  </>
   )
   
 }

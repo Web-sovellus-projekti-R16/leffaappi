@@ -1,0 +1,36 @@
+.login-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.login-form {
+  display: inline-block;
+  text-align: left;
+}
+
+.login-field {
+  margin-bottom: 1rem;
+}
+
+.login-field input {
+  padding: 0.4rem;
+  width: 200px;
+}
+
+.login-btn {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.login-register-text {
+  margin-top: 1rem;
+}
+
+.login-register-link {
+  color: #4da6ff;
+  text-decoration: none;
+}
+
+.login-register-link:hover {
+  text-decoration: underline;
+}
