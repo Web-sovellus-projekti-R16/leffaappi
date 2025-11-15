@@ -27,7 +27,7 @@ export async function getCurrentlyOnTheatres() {
     }
 }
 
-export async function searchMovie(title) {
+export async function searchMoviesByTitle(title) {
     try {
         const response = await axios.get(`${process.env.TMDB_BASE_URL}/search/movie`, {
           headers: {
@@ -36,23 +36,25 @@ export async function searchMovie(title) {
           },
           params: { query: title }
         })
-        const movie = response.data.results[0]
-        if (!movie) return null
+        const movies = response.data.results || []
+        if (!Array.isArray(movies) || movies.length === 0) return []
 
         const genres = await fetchGenres()
-        const genreObj = genres.find(g => g.id === movie.genre_ids?.[0])
-        
-        const posterPath = await fetchImage(movie.id)
 
-        return {
-            tmdb_id: movie.id,
-            title: movie.title,
-            overview: movie.overview,
-            genre: genreObj ? genreObj.name : null,
-            poster_path: posterPath ? `https://image.tmdb.org/t/p/w500${posterPath}` : null
-        }
+        return movies.map(movie => {
+          const genreObj = genres.find(g => g.id === movie.genre_ids?.[0])
+
+          return {
+              tmdb_id: movie.id,
+              title: movie.title,
+              overview: movie.overview,
+              genre: genreObj ? genreObj.name : null,
+              poster_path: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null
+          }
+        }) 
     } catch (err) {
         console.error('TMDB search by title fetch failed:', err.message)
+        return []
     }
 }
 
