@@ -36,7 +36,7 @@ export default function MovieExplorer() {
         <div className='container'>
             <p>Search movies by <strong>title</strong>, <strong>genre</strong>, or <strong>actor</strong>.</p>
             
-            <div className='searchBar'>
+            <div className='search-bar'>
                 <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
                     <option value="title">Title</option>
                     <option value="genre">Genre</option>
@@ -56,12 +56,12 @@ export default function MovieExplorer() {
 
             {loading && <p className='loading'>Loading...</p> }
             {error && <p className='error'>{error}</p>}
-            <div className='movieGrid' style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className='movie-grid-bg'>
                 {movies.map((m) => (
-                    <div className='movieCard' key={m.tmdb_id || m.id} style={{ width: '200px' }}>
+                    <div className='movie-card-bg' key={m.tmdb_id || m.id}>
                         <h2>{m.title}</h2>
                         <p>{m.overview}</p>
-                        {m.poster_path && <img src={m.poster_path} alt={m.title} width={'200'} />}
+                        {m.poster_path && <img src={m.poster_path} alt={m.title} />}
                     </div>
                 ))}
             </div>
