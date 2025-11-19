@@ -7,10 +7,27 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
 
-  const logins = (e) => {
-    e.preventDefault()
-    navigate("/account")
+  const logins = async (e) => {
+  e.preventDefault()
+
+  const res = await fetch("http://localhost:3001/account/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    alert(data.error || "Login failed")
+    return
   }
+
+  localStorage.setItem("token", data.token)
+
+  navigate("/home")
+}
+
 
   return (
     <div className="login-container">

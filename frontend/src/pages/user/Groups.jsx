@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 export default function Groups() {
   return (
     <div className="groups-container">
-    <Link to="/home" className="groups-back">Back to Profile</Link>
+    <Link to="/home" className="groups-back">Back to Home</Link>
 
       <h2>Groups</h2>
 

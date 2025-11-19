@@ -8,10 +8,30 @@ export default function Register() {
   const [confirm, setConfirm] = useState("")
   const navigate = useNavigate()
 
-  const registers = (e) => {
-    e.preventDefault()
-    navigate("/login")
+  const registers = async (e) => {
+  e.preventDefault()
+
+  if (password !== confirm) {
+    alert("Passwords do not match")
+    return
   }
+
+  const res = await fetch("http://localhost:3001/account/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    alert(data.error || "Registration failed")
+    return
+  }
+
+  navigate("/login")
+}
+
 
   return (
     <div className="register-container">

@@ -4,7 +4,7 @@ import "./Favorites.css"
 export default function Favorites() {
   return (
     <div className="favorites-container">
-      <Link to="/home" className="favorites-back">Back to Profile</Link>
+      <Link to="/home" className="favorites-back">Back to Home</Link>
 
       <h2 className="favorites-title">My Favorites</h2>
 

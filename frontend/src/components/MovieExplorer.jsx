@@ -14,7 +14,7 @@ export default function MovieExplorer() {
         setError(null);
         setMovies([]);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/search/?${searchBy}=${query}`);
+            const res = await fetch(`http://localhost:3001/movies/search/?${searchBy}=${query}`);
             if (res.status === 404) {
                 setError(`No movie found for: "${query}"`);
                 return;

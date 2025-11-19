@@ -4,22 +4,33 @@ import "./Navig.css"
 export default function Navig() {
   const navigate = useNavigate()
 
-  const loggedin = (e, dest) => {
-    e.preventDefault()
+  //if (loggeddin) navigate(dest) else navigate("/login")
 
-    //if (loggeddin) navigate(dest) else navigate("/login")
-    navigate("/login")
+  const logout = () => {
+    localStorage.removeItem("token")
+    navigate("/")
   }
 
   return (
     <nav className="navbar">
-      <NavLink to="/" className="navlink">Home</NavLink>
+
+      <NavLink to={localStorage.getItem("token") ? "/home" : "/"} className="navlink">Home</NavLink>
       <NavLink to="/search" className="navlink">Search</NavLink>
 
-      <a href="/groups" onClick={(e) => loggedin(e, "/groups")} className="navlink">Groups</a>
-      <a href="/favorites" onClick={(e) => loggedin(e, "/favorites")} className="navlink">Favorites</a>
+      <NavLink to="/groups" className="navlink">Groups</NavLink>
+      <NavLink to="/favorites" className="navlink">Favorites</NavLink>
+      <NavLink to="/account" className="navlink account">Account</NavLink>
 
-      <a href="/account" onClick={(e) => loggedin(e, "/account")} className="navlink account">Account</a>
+      {localStorage.getItem("token") && (
+        <button
+          onClick={logout}
+          className="navlink logout-btn"
+        >
+          Logout
+        </button>
+      )}
+
     </nav>
   )
 }
+
