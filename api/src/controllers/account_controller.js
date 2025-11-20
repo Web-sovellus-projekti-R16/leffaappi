@@ -46,15 +46,32 @@ export const loginAccount = async (req, res) => {
             return res.status(401).json({ error: "Invalid Email or Password" })
         }
 
-        const token = jwt.sign({
+        const accessToken = jwt.sign({
+            id: account.id,
             email: account.email
         },
-        process.env.JWT_SECRET)
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' })
+
+        const refreshToken = jwt.sign({
+            id: account.id,
+            email: account.email
+        },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: '2h' })
+        
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
         
         res.json({
             message: "Login successful",
-            token,
+            token: accessToken,
             account: {
+                id: account.id,
                 email: account.email
             }
         })
@@ -62,4 +79,28 @@ export const loginAccount = async (req, res) => {
         console.error("Login error:", err)
         res.status(500).json({ error: "Server error" })
     }
+}
+
+export const refreshAccessToken = (req, res) => {
+    const token = req.cookies.refreshToken
+    if (!token) {
+        return res.status(401).json({ error: "No refresh token found" })
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+        const newAccessToken = jwt.sign({
+            id: decoded.id,
+            email: decoded.email
+        },
+        process.env.JWT_SECRET,
+            { expiresIn: '1h' })
+        res.json({ token: newAccessToken })
+    } catch (err) {
+        res.status(401).json({ error: "Invalid refresh token" })
+    }
+}
+
+export const logoutAccount = (req, res) => {
+    res.clearCookie("refreshToken")
+    return res.json({ message: "Logout succesful" })
 }

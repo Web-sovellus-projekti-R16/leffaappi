@@ -7,7 +7,9 @@ drop table if exists account_movie cascade;
 create table account (
 	id serial primary key,
 	email varchar(255) unique not null,
-	password_hash varchar(255) not null
+	password_hash varchar(255) not null,
+	is_deleted boolean default false,
+	account_removed date
 );
 
 create table "group" (
