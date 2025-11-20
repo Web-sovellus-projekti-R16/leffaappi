@@ -6,7 +6,11 @@ export default function Navig() {
 
   //if (loggeddin) navigate(dest) else navigate("/login")
 
-  const logout = () => {
+  const logout = async () => {
+    await fetch(`${import.meta.env.VITE_API_URL}/account/logout`, {
+      method: "POST",
+      credentials: "include"
+    })
     localStorage.removeItem("token")
     navigate("/")
   }
@@ -19,7 +23,8 @@ export default function Navig() {
 
       <NavLink to="/groups" className="navlink">Groups</NavLink>
       <NavLink to="/favorites" className="navlink">Favorites</NavLink>
-      <NavLink to="/account" className="navlink account">Account</NavLink>
+      <NavLink to={localStorage.getItem("token") ? "/account" : "/login"} 
+        className="navlink account">{localStorage.getItem("token") ? "Account" : "Sign In"}</NavLink>
 
       {localStorage.getItem("token") && (
         <button

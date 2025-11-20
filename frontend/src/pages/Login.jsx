@@ -10,9 +10,10 @@ export default function Login() {
   const logins = async (e) => {
   e.preventDefault()
 
-  const res = await fetch("http://localhost:3001/account/login", {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/account/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ email, password })
   })
 
