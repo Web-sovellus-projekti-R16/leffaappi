@@ -9,7 +9,10 @@ import accountRouter from "./routers/account_router.js";
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.REACT_URL,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
