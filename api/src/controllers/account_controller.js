@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { insertAccount, findAccountByEmail } from '../models/account_model.js'
+import { insertAccount, 
+        findAccountByEmail,
+        softDeleteAccount,
+        permanentlyDeleteExpiredAccounts } from '../models/account_model.js'
 
 export const createAccount = async (req, res) => {
     try {
@@ -40,6 +43,12 @@ export const loginAccount = async (req, res) => {
         }
 
         const account = result.rows[0]
+
+        if (account.is_deleted) {
+            return res.status(403).json({
+                error: "Account is deleted. You can restore it within 14 days."
+            })
+        }
         const validatePassword = await bcrypt.compare(password, account.password_hash)
 
         if (!validatePassword) {
@@ -103,4 +112,30 @@ export const refreshAccessToken = (req, res) => {
 export const logoutAccount = (req, res) => {
     res.clearCookie("refreshToken")
     return res.json({ message: "Logout succesful" })
+}
+
+export const deleteAccount = async (req, res) => {
+    try {
+        const accountId = req.user.id
+        const result = await softDeleteAccount(accountId)
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Account not found" })
+        }
+        res.json({ message: "Account is flagged as deleted. It will be permanently removed in 14 days."})
+    } catch (err) {
+        console.error("Delete account error:", err)
+        res.status(500).json({ error: "Server error" })
+    }
+}
+
+export const getProfile = async (req, res) => {
+    try {
+        const { id, email } = req.user
+        res.json({
+            message: "Profile retrieved",
+            user: { id, email }
+        })
+    } catch (err) {
+        res.status(500).json({ error: "Server error" })
+    }
 }

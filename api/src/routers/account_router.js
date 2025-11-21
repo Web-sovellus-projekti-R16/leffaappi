@@ -1,5 +1,11 @@
 import express from 'express'
-import { createAccount, loginAccount, logoutAccount, refreshAccessToken } from '../controllers/account_controller.js'
+import { createAccount, 
+        loginAccount, 
+        logoutAccount, 
+        refreshAccessToken,
+        deleteAccount,
+        getProfile } from '../controllers/account_controller.js'
+import { authMiddleware } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
@@ -7,5 +13,8 @@ router.post("/register", createAccount)
 router.post("/login", loginAccount)
 router.post("/logout", logoutAccount)
 router.post("/refresh", refreshAccessToken)
+
+router.get("/profile", authMiddleware, getProfile)
+router.put("/delete", authMiddleware, deleteAccount)
 
 export default router
