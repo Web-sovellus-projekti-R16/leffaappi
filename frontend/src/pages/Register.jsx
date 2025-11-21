@@ -2,17 +2,31 @@ import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import "./Register.css"
 
+
+
+
 export default function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const navigate = useNavigate()
 
+  function validpassword(password) {
+    const minLength = password.length >= 8
+    const hasUpper = /[A-Z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+
+    return minLength && hasUpper && hasNumber
+  }
+  
   const registers = async (e) => {
   e.preventDefault()
 
   if (password !== confirm) {
     alert("Passwords do not match")
+    return
+  } else if (!validpassword(password)) {
+    alert("Password needs 8 characters and contain an uppercase letter and a number")
     return
   }
 
