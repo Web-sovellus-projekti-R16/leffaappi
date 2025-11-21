@@ -1,9 +1,43 @@
 import { Link, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
 import "./Account.css"
 
 export default function Account() {
   const navigate = useNavigate()
-  
+  const [profile, setProfile] = useState(null)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      navigate("/")
+      return
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const result = await fetch(`${import.meta.env.VITE_API_URL}/account/profile`, {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          },
+          credentials: "include"
+        })
+
+        if (result.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/")
+          return
+        }
+
+        const data = await result.json()
+        setProfile(data)
+      } catch (err) {
+        console.error("Profile fetch error:", err)
+      }
+    }
+    fetchProfile()
+  }, [navigate])
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete your account. It will be permanently deleted after 14 days."
@@ -14,11 +48,11 @@ export default function Account() {
     try {
       const token = localStorage.getItem("token")
 
-      const result = await fetch(`${process.env.VITE_API_URL}/account/delete`, {
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/account/delete`, {
         method: "PUT",
         credentials: "include",
         headers: {
-          "Authorization": "Bearer" + token,
+          "Authorization": "Bearer " + token,
           "Content-Type": "application/json"
         }
       })
