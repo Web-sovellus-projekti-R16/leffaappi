@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import MovieExplorer from "../components/MovieExplorer"
 import NowPlaying from "../components/nowPlaying"
-import "./MainPage.css"
+import "./Mainpage.css"
 
 export default function MainPage() {
   return (
