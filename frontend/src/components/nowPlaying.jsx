@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./nowPlaying.css";
 
 export default function NowPlaying() {
   const [movies, setMovies] = useState([]);
@@ -19,18 +20,18 @@ export default function NowPlaying() {
     load();
   }, []);
 
-  if (loading) return <p>Ladataan elokuvia...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <section>
-      <h2>Nyt elokuvateattereissa</h2>
+      <h2>Now on Theatres</h2>
       <div className="movie-grid">
         {movies.map(m => (
           <div className="movie-card" key={m.tmdb_id}>
+            <h3>{m.title}</h3>
             {m.poster_path && (
               <img src={m.poster_path} alt={m.title} />
             )}
-            <h3>{m.title}</h3>
           </div>
         ))}
       </div>

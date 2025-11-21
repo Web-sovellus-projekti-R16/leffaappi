@@ -41,7 +41,7 @@ export default function Account() {
 
   return (
     <div className="account-container">
-      <Link to="/" className="account-back">Back to Profile</Link>
+      <Link to="/home" className="account-back">Back to Home</Link>
 
       <div className="account-top-section">
         <div className="account-profile-row">

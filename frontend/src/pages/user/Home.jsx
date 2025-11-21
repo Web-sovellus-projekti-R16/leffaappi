@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import MovieExplorer from "../../components/MovieExplorer"
+import NowPlaying from "../../components/nowPlaying"
 import "./Home.css"
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
 
       <div className="home-explorer-wrapper">
         <MovieExplorer />
+        <NowPlaying />
       </div>
     </div>
   )

@@ -7,10 +7,28 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
 
-  const logins = (e) => {
-    e.preventDefault()
-    navigate("/account")
+  const logins = async (e) => {
+  e.preventDefault()
+
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/account/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ email, password })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    alert(data.error || "Login failed")
+    return
   }
+
+  localStorage.setItem("token", data.token)
+
+  navigate("/home")
+}
+
 
   return (
     <div className="login-container">

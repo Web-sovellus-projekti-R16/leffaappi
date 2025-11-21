@@ -16,6 +16,6 @@ app.get("/", async (req, res) => {
 
 app.use("/movies", movieRouter);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT}`)
+app.listen(import.meta.env.VITE_API_PORT, () => {
+    console.log(`Server is running on ${import.meta.env.VITE_API_URL}`)
 })

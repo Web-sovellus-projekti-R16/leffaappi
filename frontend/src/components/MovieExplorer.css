@@ -10,7 +10,7 @@
     color: #444;
 }
 
-.searchBar {
+.search-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -54,19 +54,13 @@ button:hover {
     background-color: #3a7acc;
 }
 
-h1 {
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    color: #333;
-}
-
-.movieGrid {
-    display: flex;
-    flex-wrap: wrap;
+.movie-grid-bg {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
 }
 
-.movieCard {
+.movie-card-bg {
     width: 220px;
     background-color: #fafafa;
     border: 1px solid #e2e2e2;
@@ -76,24 +70,24 @@ h1 {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.movieCard:hover {
+.movie-card-bg:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.movieCard img {
+.movie-card-bg img {
     border-radius: 8px;
     width: 100%;
     height: auto;
     margin-bottom: 0.5rem;
 }
 
-.movieCard h2 {
+.movie-card-bg h2 {
     font-size: 1.1rem;
     margin: 0.5rem 0;
 }
 
-.movieCard p {
+.movie-card-bg p {
     font-size: 0.9rem;
     color: #555;
     line-height: 1.3;
