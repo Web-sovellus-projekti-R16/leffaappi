@@ -116,17 +116,32 @@ export const logoutAccount = (req, res) => {
 
 export const deleteAccount = async (req, res) => {
     try {
-        const accountId = req.user.id
-        const result = await softDeleteAccount(accountId)
-        if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Account not found" })
+        const { confirmation } = req.body;
+        const expectedPhrase = "delete-my-account";
+
+        if (confirmation !== expectedPhrase) {
+            return res.status(400).json({
+                error: `Incorrect confirmation phrase. Please type: ${expectedPhrase}`
+            });
         }
-        res.json({ message: "Account is flagged as deleted. It will be permanently removed in 14 days."})
+
+        const accountId = req.user.id;
+        const result = await softDeleteAccount(accountId);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Account not found" });
+        }
+
+        res.json({
+            message: "Account is flagged as deleted. It will be permanently removed in 14 days."
+        });
+
     } catch (err) {
-        console.error("Delete account error:", err)
-        res.status(500).json({ error: "Server error" })
+        console.error("Delete account error:", err);
+        res.status(500).json({ error: "Server error" });
     }
-}
+};
+
 
 export const getProfile = async (req, res) => {
     try {
