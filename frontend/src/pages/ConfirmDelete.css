@@ -1,0 +1,38 @@
+.confirm-delete-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.confirm-delete-phrase {
+  background: #eee;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 5px;
+  font-size: 1.1rem;
+}
+
+.confirm-delete-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.confirm-delete-btn {
+  background-color: red;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.confirm-delete-cancel {
+  text-decoration: none;
+  color: #007bff;
+  display: block;
+}
+
