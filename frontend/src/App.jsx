@@ -13,6 +13,7 @@ import Account from "./pages/user/Account"
 import Search from "./pages/Search"
 import NowPlaying from "./components/nowPlaying.jsx";
 import ProtectedRoute from "./components/ProtectedRoute"
+import ConfirmDelete from "./pages/ConfirmDelete";
 
 
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
         <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
         <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/confirm-delete" element={<ProtectedRoute><ConfirmDelete /></ProtectedRoute>} />
 
         <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
