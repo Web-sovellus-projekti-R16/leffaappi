@@ -38,6 +38,11 @@ export default function Account() {
     fetchProfile()
   }, [navigate])
 
+  const goToConfirmDelete = () => {
+  navigate("/confirm-delete");
+  };
+
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete your account. It will be permanently deleted after 14 days."
@@ -86,7 +91,7 @@ export default function Account() {
         </div>
       </div>
 
-      <button className="account-delete-btn" onClick={handleDelete}>
+      <button className="account-delete-btn" onClick={goToConfirmDelete}>
         Delete Account
       </button>
     </div>
