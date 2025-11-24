@@ -1,33 +1,40 @@
 services:
-  api:
-    build: ./api
-    container_name: express_api
-    env_file:
-      - .env
-    ports:
-      - "${PORT}:${PORT}"
 
   db:
     image: postgres:16
-    container_name: postgres_db
+    container_name: leffa-db
     restart: unless-stopped
+    env_file:
+      - ./api/.env
     environment:
-      POSTGRES_USER: netuser
-      POSTGRES_PASSWORD: netpass
-      POSTGRES_DB: netdb
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./api/LeffaAppiDb.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  api:
+    build: ./api
+    container_name: leffa-api
+    env_file:
+      - ./api/.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
 
   frontend:
     build: ./frontend
-    container_name: react_frontend
+    container_name: leffa-frontend
     env_file:
-      - .env
+      - ./frontend/.env
     ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+      - "5173:5173"
+    depends_on:
+      - api
 
 volumes:
   pgdata:
