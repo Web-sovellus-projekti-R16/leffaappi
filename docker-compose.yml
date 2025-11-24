@@ -5,14 +5,9 @@ services:
     container_name: leffa-db
     restart: unless-stopped
     env_file:
-      - ./api/.env
-    environment:
-      POSTGRES_HOST: ${DB_HOST}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      - ./.env
     ports:
-      - "${DB_PORT}:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -22,7 +17,7 @@ services:
     env_file:
       - ./api/.env
     ports:
-      - "3001:3001"
+      - "${PORT}:${PORT}"
     depends_on:
       - db
 
@@ -32,7 +27,7 @@ services:
     env_file:
       - ./frontend/.env
     ports:
-      - "5173:5173"
+      - "${PORT}:${PORT}"
     depends_on:
       - api
 
