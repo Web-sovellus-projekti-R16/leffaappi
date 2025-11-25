@@ -7,6 +7,34 @@ export default function MovieExplorer() {
     const [query, setQuery] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const token = localStorage.getItem("token");
+    const isSignedIn = !!token;
+    const [favorites, setFavorites] = useState([]);
+
+    useEffect(() => {
+        async function loadFavorites() {
+            if (!isSignedIn) return;
+
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setFavorites(data.map(m => m.tmdb_id));
+                }
+            } catch (err) {
+                console.error("Failed to load favorites:", err);
+            }
+        }
+
+        loadFavorites();
+    }, [isSignedIn])
 
     const fetchMovie = async () => {
         if (!query.trim() || !searchBy.trim()) return;
@@ -31,6 +59,35 @@ export default function MovieExplorer() {
         }
     }
     
+    async function addFavorite(tmdb_id) {
+        if (!isSignedIn) {
+            console.warn("No user logged in");
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ tmdb_id }),
+            credentials: "include"
+            })
+
+            const data = await response.json()
+            console.log("FavMovie response:", data)
+
+            if (!response.ok) {
+            console.error("FavMovie failed:", data.error)
+            }
+
+            setFavorites(prev => [...prev, tmdb_id]);
+        } catch (err) {
+            console.error("FavMovie test error:", err)
+        }
+    }
 
     return (
         <div className='container'>
@@ -62,6 +119,13 @@ export default function MovieExplorer() {
                         <h2>{m.title}</h2>
                         <p>{m.overview}</p>
                         {m.poster_path && <img src={m.poster_path} alt={m.title} />}
+                        {isSignedIn && (
+                            <button className='fav-button'
+                                disabled={favorites.includes(m.tmdb_id)} 
+                                onClick={() => addFavorite(m.tmdb_id)}>
+                                {favorites.includes(m.tmdb_id) ? "Favorited" : "Add to favorites"}
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

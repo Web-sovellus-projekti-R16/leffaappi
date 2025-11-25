@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
+import { useEffect } from "react"
 import "./Favorites.css"
 
 export default function Favorites() {
+
   return (
     <div className="favorites-container">
       <Link to="/home" className="favorites-back">Back to Home</Link>

@@ -1,5 +1,10 @@
 import { getCurrentlyOnTheatres,
-  searchMoviesByTitle, searchMoviesByGenre, searchMoviesByActor } from "../helpers/tmdbService.js";
+  searchMoviesByTitle, searchMoviesByGenre, searchMoviesByActor,
+  searchMovieByTmdbId } from "../helpers/tmdbService.js";
+import { getMovieByTmdbId,
+  insertMovie,
+  getFavoriteMovies,
+  insertFavoriteMovie as insertFavoriteMovieModel } from "../models/movie_model.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -43,5 +48,48 @@ export async function nowplaying(req, res, next) {
     return res.status(200).json(movies)
   } catch (err) {
     next(err);
+  }
+}
+
+export async function getFavorites(req, res, next) {
+  try {
+    const accountId = req.user.id
+    const favoriteMovies = await getFavoriteMovies(accountId)
+    return res.json(favoriteMovies.rows)
+  } catch (err) {
+    console.error(err)
+    next(err)
+  }
+}
+
+export async function insertFavoriteMovie(req, res, next) {
+  try {
+    const accountId = req.user.id
+    const { tmdb_id } = req.body
+
+    if (!tmdb_id) {
+      return res.status(400).json({ error: "Missing tmdb_id" })
+    }
+
+    let dbMovie = await getMovieByTmdbId(tmdb_id)
+    let movie = dbMovie.rows[0] 
+
+    if (!movie) {
+      const tmdbMovie = await searchMovieByTmdbId(tmdb_id)
+      if (!tmdbMovie) {
+        return res.status(404).json({ error: "Movie not found in TMDB" })
+      }
+      const inserted = await insertMovie(tmdbMovie)
+      movie = inserted.rows[0]
+    }
+
+    const result = await insertFavoriteMovieModel(accountId, movie.id)
+    if (result.rowCount === 0) {
+      return res.status(400).json({ error: 'Failed to insert favorite movie' })
+    }
+    return res.status(200).json(result.rows[0])
+  } catch (err) {
+    console.error(err)
+    next(err)
   }
 }
