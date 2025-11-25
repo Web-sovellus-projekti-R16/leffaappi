@@ -27,6 +27,22 @@ export async function getCurrentlyOnTheatres() {
     }
 }
 
+export async function searchMovieByTmdbId(tmdbId) {
+  try {
+    const response = await axios.get(`${process.env.TMDB_BASE_URL}/movie/${tmdbId}`, {
+      headers: {
+          'Authorization': `Bearer ${process.env.TMDB_BEARER}`,
+          'Accept': 'application/json'
+        }
+      })
+    return response.data
+  } catch (err) {
+    console.error("TMDB movie fetch error:", err.response?.data || err.message)
+    return null
+  }
+}
+
+
 export async function searchMoviesByTitle(title) {
     try {
         const response = await axios.get(`${process.env.TMDB_BASE_URL}/search/movie`, {
