@@ -35,7 +35,11 @@ export default function Favorites() {
                       ${import.meta.env.VITE_API_URL}/movies/tmdb?tmdb_id=${fav.tmdb_id}`
                     );
                     if (!detailsRes.ok) return null;
-                    return await detailsRes.json();
+                    const raw = await detailsRes.json();
+                    return {
+                      tmdb_id: raw.id,
+                      title: raw.title
+                    };
                   })
                 )
 
@@ -50,6 +54,30 @@ export default function Favorites() {
 
         loadFavorites();
     }, [isSignedIn])
+
+  const handleRemoveFavorite = async (tmdb_id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ tmdb_id })
+      });
+
+      if (!res.ok) {
+        console.error("Failed to remove favorite");
+        return;
+      }
+
+      setFavorites(prev => prev.filter(movie => movie.tmdb_id !== tmdb_id));
+    } catch (err) {
+      console.error("Error removing favorite:", err);
+    }
+  } 
 
   return (
     <div className="favorites-container">
@@ -70,9 +98,11 @@ export default function Favorites() {
           <div key={movie.tmdb_id} className="favorites-item">
             <div className="favorites-info">
               <h3>{movie.title}</h3>
+              <span>{movie.movie_id}</span>
             </div>
             <span>★★★★☆</span>
-            <button className="favorites-delete-btn">Delete</button>
+            <button className="favorites-delete-btn"
+              onClick={() => handleRemoveFavorite(movie.tmdb_id)}>Delete</button>
           </div>
         ))}
       </div>
