@@ -10,6 +10,7 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./LeffaAppiDb.sql:/docker-entrypoint-initdb.d/init.sql
 
   api:
     build: ./api
@@ -27,7 +28,7 @@ services:
     env_file:
       - ./frontend/.env
     ports:
-      - "${PORT}:${PORT}"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     depends_on:
       - api
 

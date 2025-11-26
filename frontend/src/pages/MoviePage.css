@@ -1,0 +1,86 @@
+.movie-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.movie-header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.poster {
+    width: 260px;
+    border-radius: 10px;
+}
+
+.info h1 {
+    margin-top: 0;
+}
+
+.overview {
+    margin: 1rem 0;
+    line-height: 1.4;
+    color: #444;
+}
+
+.meta {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.review-section {
+    margin-top: 2rem;
+}
+
+.review-section textarea {
+    width: 100%;
+    height: 100px;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    margin: 0.5rem 0;
+}
+
+.review-section select {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-section button {
+    background: #4a90e2;
+    color: white;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+}
+
+.reviews-list {
+    margin-top: 1rem;
+}
+
+.review-card {
+    background: #fafafa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+}
+
+.reviewer {
+    margin: 0;
+}
+
+.stars {
+    margin: 0.3rem 0;
+    font-size: 1.2rem;
+}
+
+.date {
+    font-size: 0.8rem;
+    color: #777;
+}

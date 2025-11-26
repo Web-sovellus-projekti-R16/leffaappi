@@ -9,51 +9,52 @@ export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-        async function loadFavorites() {
-            if (!isSignedIn) return;
-            setLoading(true);
+    async function loadFavorites() {
+      if (!isSignedIn) return;
+      setLoading(true);
 
-            try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                credentials: "include"
-                });
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+          },
+          credentials: "include"
+        });
 
-                if (!res.ok) {
-                  setFavorites([]);
-                  setLoading(false);
-                  return;
-                }
-                
-                const favList = await res.json();
-                const detailedFavorites = await Promise.all(
-                  favList.map(async (fav) => {
-                    const detailsRes = await fetch(`
-                      ${import.meta.env.VITE_API_URL}/movies/tmdb?tmdb_id=${fav.tmdb_id}`
-                    );
-                    if (!detailsRes.ok) return null;
-                    const raw = await detailsRes.json();
-                    return {
-                      tmdb_id: raw.id,
-                      title: raw.title
-                    };
-                  })
-                )
-
-                setFavorites(detailedFavorites.filter(Boolean));
-                
-            } catch (err) {
-                console.error("Failed to load favorites:", err);
-            } finally {
-              setLoading(false);
-            }
+        if (!res.ok) {
+          setFavorites([]);
+          setLoading(false);
+          return;
         }
 
-        loadFavorites();
-    }, [isSignedIn])
+        const favList = await res.json();
+        const detailedFavorites = await Promise.all(
+          favList.map(async (fav) => {
+            const detailsRes = await fetch(`
+                      ${import.meta.env.VITE_API_URL}/movies/tmdb?tmdb_id=${fav.tmdb_id}`
+            );
+            if (!detailsRes.ok) return null;
+            const raw = await detailsRes.json();
+            return {
+              tmdb_id: raw.id,
+              title: raw.title,
+              poster_path: raw.poster_path ? `https://image.tmdb.org/t/p/w300${raw.poster_path}` : null
+            };
+          })
+        )
+
+        setFavorites(detailedFavorites.filter(Boolean));
+
+      } catch (err) {
+        console.error("Failed to load favorites:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadFavorites();
+  }, [isSignedIn])
 
   const handleRemoveFavorite = async (tmdb_id) => {
     try {
@@ -77,7 +78,7 @@ export default function Favorites() {
     } catch (err) {
       console.error("Error removing favorite:", err);
     }
-  } 
+  }
 
   return (
     <div className="favorites-container">
@@ -92,17 +93,28 @@ export default function Favorites() {
       />
 
       <div className="favorites-list">
-        {loading && <p className='loading'>Loading...</p> }
+        {loading && <p className='loading'>Loading...</p>}
         {!loading && favorites.length === 0 && <p>You don't have any favorites yet.</p>}
         {!loading && favorites.map((movie) => (
           <div key={movie.tmdb_id} className="favorites-item">
-            <div className="favorites-info">
-              <h3>{movie.title}</h3>
-              <span>{movie.movie_id}</span>
-            </div>
-            <span>★★★★☆</span>
-            <button className="favorites-delete-btn"
-              onClick={() => handleRemoveFavorite(movie.tmdb_id)}>Delete</button>
+            <Link to={`/movie/${movie.tmdb_id}`} className="favorites-clickable">
+              {movie.poster_path && (<img src={movie.poster_path} alt={movie.title} className="favorites-poster"/>
+              )}
+              <div className="favorites-info">
+                <h3>{movie.title}</h3>
+              </div>
+            </Link>
+            <span className="favorites-rating">★★★★☆</span>
+            <span className="favorites-id">
+              {movie.movie_id}
+            </span>
+            <button
+              className="favorites-delete-btn"
+              onClick={() => handleRemoveFavorite(movie.tmdb_id)}
+            >
+              Delete
+            </button>
+
           </div>
         ))}
       </div>

@@ -3,7 +3,7 @@ drop table if exists account_group cascade;
 drop table if exists "group" cascade;
 drop table if exists movie cascade;
 drop table if exists account_movie cascade;
-drop table if exists review cascade;
+drop table if exists reviews cascade;
 
 create table account (
 	id serial primary key,
@@ -49,4 +49,5 @@ create table review (
     rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
 	created_at TIMESTAMP DEFAULT NOW()
+
 );

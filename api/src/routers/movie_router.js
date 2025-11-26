@@ -12,6 +12,8 @@ const router = Router();
 router.get("/search", search);
 router.get("/nowplaying", nowplaying);
 router.get("/tmdb", getByTmdbId);
+router.get("/tmdb/:tmdb_id", getByTmdbId);
+
 
 router.get("/favorites", authMiddleware, getFavorites);
 router.post("/favorites", authMiddleware, insertFavoriteMovie);

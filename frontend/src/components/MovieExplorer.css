@@ -103,3 +103,14 @@ button:hover {
     color: #4a90e2;
     font-style: italic;
 }
+
+.movie-card-bg h2,
+.movie-card-bg p {
+    color: #222 !important;
+}
+.movie-card-bg {
+    text-decoration: none !important;
+}
+.movie-card-bg button {
+    color: #fff !important;
+}

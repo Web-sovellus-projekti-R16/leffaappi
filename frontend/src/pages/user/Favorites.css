@@ -27,11 +27,14 @@
 
 .favorites-item {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
+
 
 .favorites-delete-btn {
   background-color: #f55;
@@ -44,4 +47,33 @@
 
 .favorites-delete-btn:hover {
   background-color: #d44;
+}
+
+.favorites-poster {
+  width: 70px;
+  height: auto;
+  border-radius: 6px;
+  margin-right: 20px;
+  object-fit: cover;
+}
+
+.favorites-info {
+  margin-left: 20px;  
+  flex: 1;
+}
+
+.favorites-rating {
+  margin-right: 200px; 
+}
+.favorites-clickable {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+  flex: 1;
+}
+
+.favorites-clickable:hover h3 {
+  text-decoration: underline;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./nowPlaying.css";
 
 export default function NowPlaying() {
@@ -25,14 +26,17 @@ export default function NowPlaying() {
   return (
     <section>
       <h2>Now on Theatres</h2>
+
       <div className="movie-grid">
         {movies.map(m => (
-          <div className="movie-card" key={m.tmdb_id}>
-            <h3>{m.title}</h3>
-            {m.poster_path && (
-              <img src={m.poster_path} alt={m.title} />
-            )}
-          </div>
+          <Link to={`/movie/${m.tmdb_id}`} key={m.tmdb_id} className="movie-card-link">
+            <div className="movie-card">
+              <h3>{m.title}</h3>
+              {m.poster_path && (
+                <img src={m.poster_path} alt={m.title} />
+              )}
+            </div>
+          </Link>
         ))}
       </div>
     </section>

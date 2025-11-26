@@ -35,3 +35,12 @@ h2 {
 .movie-card h3 {
     margin-bottom: 0.5rem;
 }
+
+.movie-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.movie-card-link:hover h3 {
+  text-decoration: underline;
+}

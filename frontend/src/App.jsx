@@ -14,6 +14,7 @@ import Search from "./pages/Search"
 import NowPlaying from "./components/nowPlaying.jsx";
 import ProtectedRoute from "./components/ProtectedRoute"
 import ConfirmDelete from "./pages/ConfirmDelete";
+import MoviePage from "./pages/MoviePage";
 
 
 
@@ -26,6 +27,7 @@ function App() {
       <Navig />
 
       <Routes>
+        <Route path="/movie/:id" element={<MoviePage />} />
 
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />

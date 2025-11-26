@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+
 import "./MovieExplorer.css";
 
 export default function MovieExplorer() {
@@ -115,18 +117,18 @@ export default function MovieExplorer() {
             {error && <p className='error'>{error}</p>}
             <div className='movie-grid-bg'>
                 {movies.map((m) => (
-                    <div className='movie-card-bg' key={m.tmdb_id || m.id}>
+                    <Link to={`/movie/${m.tmdb_id}`} className='movie-card-bg' key={m.tmdb_id || m.id}>
                         <h2>{m.title}</h2>
                         <p>{m.overview}</p>
                         {m.poster_path && <img src={m.poster_path} alt={m.title} />}
                         {isSignedIn && (
                             <button className='fav-button'
                                 disabled={favorites.includes(m.tmdb_id)} 
-                                onClick={() => addFavorite(m.tmdb_id)}>
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); addFavorite(m.tmdb_id); }}>
                                 {favorites.includes(m.tmdb_id) ? "Favorited" : "Add to favorites"}
                             </button>
                         )}
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
