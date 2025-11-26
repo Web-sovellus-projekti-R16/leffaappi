@@ -51,6 +51,27 @@ export async function nowplaying(req, res, next) {
   }
 }
 
+export async function getByTmdbId(req, res, next) {
+  try {
+    const { tmdb_id } = req.query
+
+    if (!tmdb_id) {
+      return res.status(400).json({ error: "Missing tmdb_id parameter" })
+    }
+
+    const movie = await searchMovieByTmdbId(tmdb_id)
+
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found in TMDB" })
+    }
+
+    return res.status(200).json(movie)
+  } catch (err) {
+    console.error("searchMovieTmdb error:", err)
+    next(err)
+  }
+}
+
 export async function getFavorites(req, res, next) {
   try {
     const accountId = req.user.id
