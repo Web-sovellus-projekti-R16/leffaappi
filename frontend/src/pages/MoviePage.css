@@ -84,3 +84,7 @@
     font-size: 0.8rem;
     color: #777;
 }
+.favorites-back {
+    display: inline-block;
+    margin-bottom: 1rem;
+}

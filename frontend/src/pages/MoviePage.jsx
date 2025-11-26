@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link} from "react-router-dom";
 import "./MoviePage.css";
 
 export default function MoviePage() {
     const { id } = useParams();
-
+    const token = localStorage.getItem("token");
+    const target = token ? "/home" : "/";
     const [movie, setMovie] = useState(null);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
@@ -50,7 +51,7 @@ export default function MoviePage() {
 
     return (
         <div className="movie-page">
-
+            <Link to={target} className="favorites-back">Back to Home</Link>
             <div className="movie-header">
                 {movie.poster_path && (
                     <img className="poster" src={movie.poster_path} alt={movie.title} />
