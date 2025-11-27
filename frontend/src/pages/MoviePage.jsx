@@ -10,6 +10,11 @@ export default function MoviePage() {
   const target = token ? "/home" : "/"
   const [movie, setMovie] = useState(null)
   const [reviews, setReviews] = useState([])
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null
+  const userEmail = payload?.email
+  const [favorites, setFavorites] = useState([])
+
+
 
   useEffect(() => {
     async function load() {
@@ -39,6 +44,26 @@ export default function MoviePage() {
     load()
   }, [id])
 
+  useEffect(() => {
+    async function loadFavorites() {
+      if (!token) return
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        setFavorites(data.map(m => m.tmdb_id))
+      }
+    }
+    loadFavorites()
+  }, [token])
+
+
   async function loadReviews(tmdbId) {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdbId}`)
     if (!res.ok) return
@@ -67,8 +92,40 @@ export default function MoviePage() {
     loadReviews(movie.tmdb_id)
   }
 
-  if (!movie) return <p className="loading">Loading movie...</p>
+  async function deleteReview(review_id) {
+    if (!token) return
 
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/${review_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+
+    loadReviews(movie.tmdb_id)
+  }
+
+  async function addFavorite(tmdb_id) {
+    if (!token) return
+    
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ tmdb_id })
+    })
+
+    if (res.ok) {
+      setFavorites(prev => [...prev, tmdb_id])
+    }
+  }
+
+
+
+  if (!movie) return <p className="loading">Loading movie...</p>
+  
   const average = reviews.length > 0? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null
 
   return (
@@ -78,8 +135,8 @@ export default function MoviePage() {
       <div className="movie-header">
         {movie.poster_path && (
           <img className="poster" src={movie.poster_path} alt={movie.title} />
-        )}
-
+        )}        
+        
         <div className="info">
           <h1>{movie.title}</h1>
           <p className="meta">
@@ -105,11 +162,13 @@ export default function MoviePage() {
         {reviews.length === 0 && <p>No reviews yet</p>}
 
         {reviews.map(r => (
-          <div key={r.review_id} className="review-item">
+          <div key={r.review_id} className="review-box">
+
             <p><strong>{r.email}</strong></p>
             <p>⭐ {r.rating} / 5</p>
             <p>{r.comment}</p>
             <p>{new Date(r.created_at).toLocaleString()}</p>
+            {r.email === userEmail && (<button className="review-delete-btn" onClick={() => deleteReview(r.review_id)}>Delete review</button>)}
           </div>
         ))}
       </div>

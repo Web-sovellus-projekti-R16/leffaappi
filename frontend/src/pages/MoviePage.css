@@ -94,3 +94,35 @@
   font-weight: 500;
   color: #666;
 }
+.review-box {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.review-box p {
+  margin: 4px 0;
+}
+
+.review-box strong {
+  font-size: 16px;
+}
+
+.review-delete-btn {
+  margin-top: 8px;
+  padding: 5px 10px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.review-delete-btn:hover {
+  background: #e05555;
+}
+
