@@ -5,7 +5,7 @@ import { authMiddleware } from "../middleware/authMiddleware.js"
 const router = express.Router()
 
 router.get("/movie/:movie_id", movieReviews)
-router.post("/", authMiddleware, addReview)
+router.post("/upsert", authMiddleware, addReview)
 router.put("/:id", authMiddleware, editReview)
 router.delete("/:id", authMiddleware, removeReview)
 

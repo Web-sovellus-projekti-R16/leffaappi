@@ -26,24 +26,35 @@ export const addReview = async (req, res) => {
   try {
     const account_id = req.user.id
     const { tmdb_id, rating, comment } = req.body
-
     if (!tmdb_id || !rating) {
       return res.status(400).json({ error: "tmdb_id and rating are required" })
     }
-
     const movieId = await resolveMovieId(tmdb_id)
     if (!movieId) return res.status(404).json({ error: "Movie not found" })
-
     const existing = await getUserReviewForMovie(account_id, movieId)
-    if (existing.rows.length > 0) return res.status(400).json({ error: "Already reviewed" })
-
-    const result = await createReview(account_id, movieId, rating, comment)
-    res.json(result.rows[0])
+    if (existing.rows.length > 0) {
+      const reviewId = existing.rows[0].review_id
+      const updated = await updateReview(
+        reviewId,
+        account_id,
+        rating,
+        comment
+      )
+      return res.json({ message: "updated", review: updated.rows[0] })
+    }
+    const inserted = await createReview(
+      account_id,
+      movieId,
+      rating,
+      comment
+    )
+    return res.json({ message: "inserted", review: inserted.rows[0] })
   } catch (err) {
     console.error("addReview error:", err)
     res.status(500).json({ error: "Server error" })
   }
 }
+
 
 export const editReview = async (req, res) => {
   try {

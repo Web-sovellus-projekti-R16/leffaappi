@@ -52,7 +52,7 @@ export default function MoviePage() {
 
   async function submitReview(rating, comment) {
     if (!token) return
-    await fetch(`${import.meta.env.VITE_API_URL}/reviews`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/upsert`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
