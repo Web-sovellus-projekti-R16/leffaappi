@@ -114,3 +114,8 @@ button:hover {
 .movie-card-bg button {
     color: #fff !important;
 }
+.search-card-rating {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 10px 0;
+}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import AvgRating from "../components/AvgRating"
+
 
 import "./MovieExplorer.css";
 
@@ -12,6 +14,8 @@ export default function MovieExplorer() {
     const token = localStorage.getItem("token");
     const isSignedIn = !!token;
     const [favorites, setFavorites] = useState([]);
+    const [ratings, setRatings] = useState({})
+
 
     useEffect(() => {
         async function loadFavorites() {
@@ -37,7 +41,12 @@ export default function MovieExplorer() {
 
         loadFavorites();
     }, [isSignedIn])
-
+    async function loadRating(tmdb_id) {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdb_id}`)
+    if (!res.ok) return
+    const data = await res.json()
+    setRatings(prev => ({ ...prev, [tmdb_id]: data }))
+    }
     const fetchMovie = async () => {
         if (!query.trim() || !searchBy.trim()) return;
         setLoading(true);
@@ -53,6 +62,7 @@ export default function MovieExplorer() {
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
             const data = await res.json();
             setMovies(Array.isArray(data) ? data : [data]);
+            (Array.isArray(data) ? data : [data]).forEach(movie => {loadRating(movie.tmdb_id)})
         } catch (err) {
             console.error('Error occured while fetching movies:', err);
             setError('Something went wrong. Please try again later.');
@@ -61,6 +71,9 @@ export default function MovieExplorer() {
         }
     }
     
+    
+
+
     async function addFavorite(tmdb_id) {
         if (!isSignedIn) {
             console.warn("No user logged in");
@@ -120,6 +133,9 @@ export default function MovieExplorer() {
                     <Link to={`/movie/${m.tmdb_id}`} className='movie-card-bg' key={m.tmdb_id || m.id}>
                         <h2>{m.title}</h2>
                         <p>{m.overview}</p>
+                        <div className="search-card-rating">
+                            <AvgRating reviews={ratings[m.tmdb_id]} />
+                        </div>
                         {m.poster_path && <img src={m.poster_path} alt={m.title} />}
                         {isSignedIn && (
                             <button className='fav-button'

@@ -77,3 +77,6 @@
 .favorites-clickable:hover h3 {
   text-decoration: underline;
 }
+.favorites-item .avg-rating-component {
+  margin-right: 75px;
+}

@@ -44,3 +44,7 @@ h2 {
 .movie-card-link:hover h3 {
   text-decoration: underline;
 }
+.movie-card .avg-rating-component {
+  margin-bottom: 6px;
+  margin-top: 3px;
+}

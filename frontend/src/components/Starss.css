@@ -1,0 +1,15 @@
+.starss {
+  font-size: 32px;
+  cursor: pointer;
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  color: gray;
+  transition: 0.2s;
+}
+
+.star.active {
+  color: gold;
+}

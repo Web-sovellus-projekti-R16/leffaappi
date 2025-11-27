@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
+import AvgRating from "../../components/AvgRating"
+
 import "./Favorites.css"
 
 export default function Favorites() {
@@ -7,6 +9,8 @@ export default function Favorites() {
   const token = localStorage.getItem("token");
   const isSignedIn = !!token;
   const [favorites, setFavorites] = useState([]);
+  const [ratings, setRatings] = useState({})
+
 
   useEffect(() => {
     async function loadFavorites() {
@@ -44,7 +48,10 @@ export default function Favorites() {
           })
         )
 
-        setFavorites(detailedFavorites.filter(Boolean));
+        const list = detailedFavorites.filter(Boolean)
+        setFavorites(list)
+        list.forEach(movie => loadRating(movie.tmdb_id))
+
 
       } catch (err) {
         console.error("Failed to load favorites:", err);
@@ -80,6 +87,13 @@ export default function Favorites() {
     }
   }
 
+
+  async function loadRating(tmdb_id) {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdb_id}`)
+  if (!res.ok) return
+    const data = await res.json()
+    setRatings(prev => ({ ...prev, [tmdb_id]: data }))
+  }
   return (
     <div className="favorites-container">
       <Link to="/home" className="favorites-back">Back to Home</Link>
@@ -104,7 +118,7 @@ export default function Favorites() {
                 <h3>{movie.title}</h3>
               </div>
             </Link>
-            <span className="favorites-rating">★★★★☆</span>
+            <AvgRating reviews={ratings[movie.tmdb_id]} />
             <span className="favorites-id">
               {movie.movie_id}
             </span>
