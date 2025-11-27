@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
 import AvgRating from "../../components/AvgRating"
+import Starss from "../../components/Starss"
+
 
 import "./Favorites.css"
 
@@ -94,6 +96,28 @@ export default function Favorites() {
     const data = await res.json()
     setRatings(prev => ({ ...prev, [tmdb_id]: data }))
   }
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null
+  const userEmail = payload?.email
+  async function submitReview(tmdb_id, rating, comment) {
+  if (!token) return
+
+  await fetch(`${import.meta.env.VITE_API_URL}/reviews/upsert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      tmdb_id,
+      rating,
+      comment
+    })
+  })
+
+  loadRating(tmdb_id)
+}
+
+
   return (
     <div className="favorites-container">
       <Link to="/home" className="favorites-back">Back to Home</Link>
@@ -111,24 +135,25 @@ export default function Favorites() {
         {!loading && favorites.length === 0 && <p>You don't have any favorites yet.</p>}
         {!loading && favorites.map((movie) => (
           <div key={movie.tmdb_id} className="favorites-item">
-            <Link to={`/movie/${movie.tmdb_id}`} className="favorites-clickable">
-              {movie.poster_path && (<img src={movie.poster_path} alt={movie.title} className="favorites-poster"/>
-              )}
+            <Link to={`/movie/${movie.tmdb_id}`} className="favorites-clickable">{movie.poster_path && (<img src={movie.poster_path} alt={movie.title} className="favorites-poster"/>)}
               <div className="favorites-info">
                 <h3>{movie.title}</h3>
               </div>
             </Link>
-            <AvgRating reviews={ratings[movie.tmdb_id]} />
-            <span className="favorites-id">
-              {movie.movie_id}
-            </span>
-            <button
-              className="favorites-delete-btn"
-              onClick={() => handleRemoveFavorite(movie.tmdb_id)}
-            >
-              Delete
-            </button>
-
+            {ratings[movie.tmdb_id] && (
+              <>
+                {ratings[movie.tmdb_id].some(r => r.email === userEmail) ? (
+                  <AvgRating reviews={ratings[movie.tmdb_id]} />
+                ) : (
+                  <div className="favorites-rate-box">
+                    <h4 className="favorites-rate-title">Rate this movie</h4>
+                    <Starss onSubmit={(rating, comment) => submitReview(movie.tmdb_id, rating, comment)} />
+                  </div>
+                )}
+              </>
+            )}
+            <span className="favorites-id">{movie.movie_id}</span>
+            <button className="favorites-delete-btn" onClick={() => handleRemoveFavorite(movie.tmdb_id)}>Delete</button>
           </div>
         ))}
       </div>

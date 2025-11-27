@@ -80,3 +80,12 @@
 .favorites-item .avg-rating-component {
   margin-right: 75px;
 }
+.favorites-rate-box {
+  margin-right: 300px;
+  text-align: center;
+}
+.favorites-rate-title {
+  margin: 6px 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
