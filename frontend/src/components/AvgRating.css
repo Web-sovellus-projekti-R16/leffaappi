@@ -1,30 +1,7 @@
-.avg-stars-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 10px 0;
-}
-
-.avg-stars {
-  font-size: 22px;
-  display: flex;
-  gap: 3px;
-}
-
-.avg-stars span {
+.star.gold {
   color: gold;
 }
 
-.avg-stars .empty {
+.star.gray {
   color: lightgray;
-}
-
-.avg-stars .half {
-  background: linear-gradient(90deg, gold 50%, lightgray 50%);
-  color: transparent;
-}
-
-.avg-number {
-  font-size: 16px;
-  color: #444;
 }
