@@ -20,7 +20,7 @@ export default function Favorites() {
       setLoading(true);
 
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/account`, {
           headers: {
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
@@ -69,13 +69,11 @@ export default function Favorites() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/tmdb/${tmdb_id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": "Bearer " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ tmdb_id })
+          "Authorization": "Bearer " + token
+        }
       });
 
       if (!res.ok) {
@@ -91,7 +89,7 @@ export default function Favorites() {
 
 
   async function loadRating(tmdb_id) {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdb_id}`)
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
   if (!res.ok) return
     const data = await res.json()
     setRatings(prev => ({ ...prev, [tmdb_id]: data }))

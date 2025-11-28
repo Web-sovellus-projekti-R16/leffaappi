@@ -29,7 +29,7 @@ export default function NowPlaying() {
   if (loading) return <p>Loading...</p>;
 
   async function loadRating(tmdb_id) {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdb_id}`)
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
   if (!res.ok) return
     const data = await res.json()
     setRatings(prev => ({ ...prev, [tmdb_id]: data }))

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import AvgRating from "../components/AvgRating"
-
-
 import "./MovieExplorer.css";
 
 export default function MovieExplorer() {
@@ -22,12 +20,12 @@ export default function MovieExplorer() {
             if (!isSignedIn) return;
 
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                credentials: "include"
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/account`, {
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include"
                 });
 
                 if (res.ok) {
@@ -41,12 +39,14 @@ export default function MovieExplorer() {
 
         loadFavorites();
     }, [isSignedIn])
+
     async function loadRating(tmdb_id) {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdb_id}`)
-    if (!res.ok) return
-    const data = await res.json()
-    setRatings(prev => ({ ...prev, [tmdb_id]: data }))
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
+        if (!res.ok) return
+        const data = await res.json()
+        setRatings(prev => ({ ...prev, [tmdb_id]: data }))
     }
+
     const fetchMovie = async () => {
         if (!query.trim() || !searchBy.trim()) return;
         setLoading(true);
@@ -62,7 +62,7 @@ export default function MovieExplorer() {
             if (!res.ok) throw new Error(`Server error: ${res.status}`);
             const data = await res.json();
             setMovies(Array.isArray(data) ? data : [data]);
-            (Array.isArray(data) ? data : [data]).forEach(movie => {loadRating(movie.tmdb_id)})
+            (Array.isArray(data) ? data : [data]).forEach(movie => { loadRating(movie.tmdb_id) })
         } catch (err) {
             console.error('Error occured while fetching movies:', err);
             setError('Something went wrong. Please try again later.');
@@ -70,32 +70,29 @@ export default function MovieExplorer() {
             setLoading(false);
         }
     }
-    
-    
-
 
     async function addFavorite(tmdb_id) {
         if (!isSignedIn) {
             console.warn("No user logged in");
             return;
         }
-        
+
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ tmdb_id }),
-            credentials: "include"
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/reviews/upsert`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ tmdb_id, rating: 1 }),
+                credentials: "include"
             })
 
             const data = await response.json()
             console.log("FavMovie response:", data)
 
             if (!response.ok) {
-            console.error("FavMovie failed:", data.error)
+                console.error("FavMovie failed:", data.error)
             }
 
             setFavorites(prev => [...prev, tmdb_id]);
@@ -107,7 +104,7 @@ export default function MovieExplorer() {
     return (
         <div className='container'>
             <p>Search movies by <strong>title</strong>, <strong>genre</strong>, or <strong>actor</strong>.</p>
-            
+
             <div className='search-bar'>
                 <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
                     <option value="title">Title</option>
@@ -126,7 +123,7 @@ export default function MovieExplorer() {
                 <button onClick={fetchMovie}>Search</button>
             </div>
 
-            {loading && <p className='loading'>Loading...</p> }
+            {loading && <p className='loading'>Loading...</p>}
             {error && <p className='error'>{error}</p>}
             <div className='movie-grid-bg'>
                 {movies.map((m) => (
@@ -139,7 +136,7 @@ export default function MovieExplorer() {
                         {m.poster_path && <img src={m.poster_path} alt={m.title} />}
                         {isSignedIn && (
                             <button className='fav-button'
-                                disabled={favorites.includes(m.tmdb_id)} 
+                                disabled={favorites.includes(m.tmdb_id)}
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); addFavorite(m.tmdb_id); }}>
                                 {favorites.includes(m.tmdb_id) ? "Favorited" : "Add to favorites"}
                             </button>
