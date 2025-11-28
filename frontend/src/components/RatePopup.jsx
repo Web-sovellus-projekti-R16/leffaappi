@@ -9,12 +9,7 @@ export default function RatePopup({ rating, onClose, onSubmit }) {
       <div className="rate-box">
         <h3>Rate {rating} / 5</h3>
 
-        <textarea
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-          placeholder="Write a comment"
-          className="rate-textarea"
-        />
+        <textarea value={comment}onChange={e => setComment(e.target.value)}placeholder="Write a comment"className="rate-textarea"/>
 
         <div className="rate-buttons">
           <button onClick={onClose}>Cancel</button>

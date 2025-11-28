@@ -21,29 +21,15 @@ export default function Starss({ onSubmit }) {
     <>
       <div className="starss">
         {[1,2,3,4,5].map(n => (
-          <span
-            key={n}
-            className={
-              n <= (hovered || selected)
-                ? "star active"
-                : "star"
-            }
+          <span key={n}className={n <= (hovered || selected)? "star active": "star"}
             onMouseEnter={() => setHovered(n)}
             onMouseLeave={() => setHovered(0)}
-            onClick={() => clickStar(n)}
-          >
-            ★
+            onClick={() => clickStar(n)}>★
           </span>
         ))}
       </div>
 
-      {open && (
-        <RatePopup
-          rating={selected}
-          onClose={() => setOpen(false)}
-          onSubmit={submit}
-        />
-      )}
+      {open && (<RatePopup rating={selected}onClose={() => setOpen(false)}onSubmit={submit}/>)}
     </>
   )
 }
