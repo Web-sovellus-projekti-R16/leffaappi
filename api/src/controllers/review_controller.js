@@ -3,7 +3,8 @@ import {
   updateReview,
   deleteReview,
   getReviewsByMovie,
-  getUserReviewForMovie
+  getUserReviewForMovie,
+  getUserReviews
 } from "../models/review_model.js"
 import { getMovieByTmdbId, insertMovie } from "../models/movie_model.js"
 import { searchMovieByTmdbId } from "../helpers/tmdbService.js"
@@ -18,8 +19,8 @@ async function resolveMovieId(tmdb_id) {
     const inserted = await insertMovie(tmdbMovie)
     movieRecord = inserted.rows[0]
   }
-
-  return movieRecord.id
+  
+  return movieRecord.movie_id
 }
 
 export const addReview = async (req, res) => {
@@ -42,12 +43,7 @@ export const addReview = async (req, res) => {
       )
       return res.json({ message: "updated", review: updated.rows[0] })
     }
-    const inserted = await createReview(
-      account_id,
-      movieId,
-      rating,
-      comment
-    )
+    const inserted = await createReview(account_id, movieId, rating, comment)
     return res.json({ message: "inserted", review: inserted.rows[0] })
   } catch (err) {
     console.error("addReview error:", err)
@@ -73,9 +69,15 @@ export const editReview = async (req, res) => {
 export const removeReview = async (req, res) => {
   try {
     const account_id = req.user.id
-    const review_id = req.params.id
-    const result = await deleteReview(review_id, account_id)
-    if (result.rows.length === 0) return res.status(403).json({ error: "No permission" })
+    const tmdb_id = req.params.tmdb_id
+    
+    if (!tmdb_id) return res.status(400).json({ error: "tmdb_id is required"})
+
+    const movieId = await resolveMovieId(tmdb_id)
+
+    if (!movieId) return res.status(404).json({ error: "Movie not found" })
+    const result = await deleteReview(account_id, movieId)
+    if (result.rows.length === 0) return res.status(404).json({ error: "Review not found" })
     res.json({ success: true })
   } catch (err) {
     console.error("removeReview error:", err)
@@ -90,6 +92,17 @@ export const movieReviews = async (req, res) => {
     res.json(result.rows)
   } catch (err) {
     console.error("movieReviews error:", err)
+    res.status(500).json({ error: "Server error" })
+  }
+}
+
+export const userReviews = async (req, res) => {
+  try {
+    const accountId = req.user.id
+    const result = await getUserReviews(accountId)
+    res.json(result.rows)
+  } catch (err) {
+    console.error("userReviews error:", err)
     res.status(500).json({ error: "Server error" })
   }
 }

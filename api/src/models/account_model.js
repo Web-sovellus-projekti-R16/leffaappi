@@ -16,7 +16,7 @@ export const softDeleteAccount = async (accountId) => {
         UPDATE account
         SET is_deleted = true,
             account_removed = CURRENT_DATE
-        WHERE id = $1
+        WHERE account_id = $1
         RETURNING *;`
     return await pool.query(query, [accountId])
 }

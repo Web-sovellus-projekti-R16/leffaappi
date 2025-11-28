@@ -40,7 +40,7 @@ export default function MoviePage() {
   }, [id])
 
   async function loadReviews(tmdbId) {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/${tmdbId}`)
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdbId}`)
     if (!res.ok) return
     const data = await res.json()
     setReviews(data)

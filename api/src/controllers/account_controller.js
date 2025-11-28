@@ -56,14 +56,14 @@ export const loginAccount = async (req, res) => {
         }
 
         const accessToken = jwt.sign({
-            id: account.id,
+            id: account.account_id,
             email: account.email
         },
             process.env.JWT_SECRET,
             { expiresIn: '1h' })
 
         const refreshToken = jwt.sign({
-            id: account.id,
+            id: account.account_id,
             email: account.email
         },
             process.env.JWT_REFRESH_SECRET,
@@ -80,7 +80,7 @@ export const loginAccount = async (req, res) => {
             message: "Login successful",
             token: accessToken,
             account: {
-                id: account.id,
+                id: account.account_id,
                 email: account.email
             }
         })
