@@ -87,7 +87,7 @@ export const removeReview = async (req, res) => {
 
 export const movieReviews = async (req, res) => {
   try {
-    const tmdb_id = req.params.tmdb_id;
+    const tmdb_id = req.params.movie_id;
     const result = await getReviewsByMovie(tmdb_id)
     res.json(result.rows)
   } catch (err) {
