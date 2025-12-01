@@ -36,9 +36,11 @@ CREATE TABLE review (
     review_id SERIAL PRIMARY KEY,
     account_id INTEGER NOT NULL, 
     movie_id INTEGER NOT NULL, 
-    rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    rating INTEGER CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
-	created_at TIMESTAMP DEFAULT NOW()
+	favorite BOOLEAN DEFAULT false,
+	created_at TIMESTAMP DEFAULT NOW(),
 	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
-	FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
+    FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE,
+    UNIQUE(account_id, movie_id)
 );

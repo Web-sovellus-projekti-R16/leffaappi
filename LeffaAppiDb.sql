@@ -1,53 +1,44 @@
-drop table if exists account cascade;
-drop table if exists account_group cascade;
-drop table if exists "group" cascade;
-drop table if exists movie cascade;
-drop table if exists account_movie cascade;
-drop table if exists reviews cascade;
+DROP TABLE IF EXISTS account CASCADE;
+DROP TABLE IF EXISTS account_group CASCADE;
+DROP TABLE IF EXISTS "group" CASCADE;
+DROP TABLE IF EXISTS movie CASCADE;
+DROP TABLE IF EXISTS review CASCADE;
 
-create table account (
-	id serial primary key,
-	email varchar(255) unique not null,
-	password_hash varchar(255) not null,
-	is_deleted boolean default false,
-	account_removed date
+CREATE TABLE account (
+	account_id SERIAL PRIMARY KEY,
+	email VARCHAR(255) UNIQUE NOT NULL,
+	password_hash VARCHAR(255) NOT NULL,
+	is_deleted BOOLEAN DEFAULT false,
+	account_removed DATE
 );
 
-create table "group" (
-	id serial primary key,
-	name varchar(255) not null,
-	description text,
-	owner_email varchar(255)
+CREATE TABLE "group" (
+	group_id SERIAL PRIMARY KEY,
+	"name" VARCHAR(255) NOT NULL,
+	"description" TEXT,
+	owner_email VARCHAR(255)
 );
 
-create table account_group (
-	id serial primary key,
-	account_id int not null,
-	group_id int not null,
-	foreign key (account_id) references account(id) on delete cascade,
-	foreign key (group_id) references "group"(id) on delete cascade
+CREATE TABLE account_group (
+	account_group_id SERIAL PRIMARY KEY,
+	account_id INT NOT NULL,
+	group_id INT NOT NULL,
+	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
+	FOREIGN KEY (group_id) REFERENCES "group"(group_id) ON DELETE CASCADE
 );
 
-create table movie (
-	id serial primary key,
-	tmdb_id int not null
+CREATE TABLE movie (
+	movie_id SERIAL PRIMARY KEY,
+	tmdb_id INT NOT NULL
 );
 
-create table account_movie (
-	id serial primary key,
-	account_id int not null,
-	movie_id int not null,
-	grade int,
-	review text,
-	foreign key (account_id) references account(id) on delete cascade,
-	foreign key (movie_id) references movie(id) on delete cascade
-);
-create table review (
+CREATE TABLE review (
     review_id SERIAL PRIMARY KEY,
-    account_id INTEGER NOT NULL REFERENCES account(id) ON DELETE CASCADE,
-    movie_id INTEGER NOT NULL REFERENCES movie(id) ON DELETE CASCADE,
+    account_id INTEGER NOT NULL, 
+    movie_id INTEGER NOT NULL, 
     rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
-	created_at TIMESTAMP DEFAULT NOW()
-
+	created_at TIMESTAMP DEFAULT NOW(),
+	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
+	FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 );
