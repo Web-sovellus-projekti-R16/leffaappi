@@ -90,26 +90,7 @@ export default function MoviePage() {
 
     loadReviews(movie.tmdb_id)
   }
-
-  async function addFavorite(tmdb_id) {
-    if (!token) return
-    
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ tmdb_id })
-    })
-
-    if (res.ok) {
-      setFavorites(prev => [...prev, tmdb_id])
-    }
-  }
-
-
-
+  
   if (!movie) return <p className="loading">Loading movie...</p>
   
   const average = reviews.length > 0? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null

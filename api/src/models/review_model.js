@@ -42,7 +42,7 @@ export const getUserReviewForMovie = async (account_id, movie_id) => {
 
 export const getUserReviews = async (accountId) => {
   return await pool.query(`
-        SELECT m.tmdb_id
+        SELECT r.review_id, r.rating, r.comment, m.tmdb_id
         FROM review r
         JOIN movie m ON r.movie_id = m.movie_id
         WHERE r.account_id = $1`, [accountId])

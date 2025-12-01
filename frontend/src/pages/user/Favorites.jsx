@@ -8,13 +8,12 @@ export default function Favorites() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const isSignedIn = !!token;
+  const [reviews, setReviews] = useState([])
   const [favorites, setFavorites] = useState([]);
   const [ratings, setRatings] = useState({})
 
-
-  useEffect(() => {
-    async function loadFavorites() {
-      if (!isSignedIn) return;
+  async function loadFavorites() {
+    if (!isSignedIn) return;
       setLoading(true);
 
       try {
@@ -41,9 +40,12 @@ export default function Favorites() {
             if (!detailsRes.ok) return null;
             const raw = await detailsRes.json();
             return {
+              review_id: fav.review_id,
               tmdb_id: raw.id,
               title: raw.title,
-              poster_path: raw.poster_path ? `https://image.tmdb.org/t/p/w300${raw.poster_path}` : null
+              poster_path: raw.poster_path ? `https://image.tmdb.org/t/p/w300${raw.poster_path}` : null,
+              rating: fav.rating,
+              comment: fav.comment
             };
           })
         )
@@ -51,17 +53,20 @@ export default function Favorites() {
         const list = detailedFavorites.filter(Boolean)
         setFavorites(list)
         list.forEach(movie => loadRating(movie.tmdb_id))
-
-
       } catch (err) {
         console.error("Failed to load favorites:", err);
       } finally {
         setLoading(false);
       }
+  }
+
+  useEffect(() => {
+    async function load() {
+      loadFavorites()
     }
 
-    loadFavorites();
-  }, [isSignedIn])
+    load();
+  }, [])
 
   const handleUpdateFavorite = async (moveId, grade, review) => {
     try {
@@ -104,7 +109,7 @@ export default function Favorites() {
         return;
       }
 
-      setFavorites(prev => prev.filter(movie => movie.tmdb_id !== tmdb_id));
+      loadFavorites()
     } catch (err) {
       console.error("Error removing favorite:", err);
     }
