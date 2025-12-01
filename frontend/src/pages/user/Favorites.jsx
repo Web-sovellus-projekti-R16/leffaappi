@@ -2,8 +2,6 @@ import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
 import AvgRating from "../../components/AvgRating"
 import Starss from "../../components/Starss"
-
-
 import "./Favorites.css"
 
 export default function Favorites() {
@@ -65,11 +63,36 @@ export default function Favorites() {
     loadFavorites();
   }, [isSignedIn])
 
-  const handleRemoveFavorite = async (tmdb_id) => {
+  const handleUpdateFavorite = async (moveId, grade, review) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ moveId, grade, review })
+      });
+      
+      if (!res.ok) {
+        console.error("Error to update favorite")
+      }
+
+      const updated = await res.json()
+
+      setFavorites(prev => prev.map(m => m.id === moveId ? 
+        { ...m, grade: updated.grade, review: updated.review } : m
+      ))
+    } catch (err) {
+      console.error("Error updating favorite:", err);
+    }
+  }
+
+  const handleRemoveFavorite = async (review_id) => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/tmdb/${tmdb_id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/${review_id}`, {
         method: "DELETE",
         headers: {
           "Authorization": "Bearer " + token
@@ -152,7 +175,7 @@ export default function Favorites() {
               </>
             )}
             <span className="favorites-id">{movie.movie_id}</span>
-            <button className="favorites-delete-btn" onClick={() => handleRemoveFavorite(movie.tmdb_id)}>Delete</button>
+            <button className="favorites-delete-btn" onClick={() => handleRemoveFavorite(movie.review_id)}>Delete</button>
           </div>
         ))}
       </div>
