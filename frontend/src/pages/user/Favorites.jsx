@@ -87,33 +87,34 @@ export default function Favorites() {
     }
   }
 
-
   async function loadRating(tmdb_id) {
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
-  if (!res.ok) return
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
+    if (!res.ok) return
     const data = await res.json()
     setRatings(prev => ({ ...prev, [tmdb_id]: data }))
   }
+
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null
   const userEmail = payload?.email
+
   async function submitReview(tmdb_id, rating, comment) {
-  if (!token) return
+    if (!token) return
 
-  await fetch(`${import.meta.env.VITE_API_URL}/reviews/upsert`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      tmdb_id,
-      rating,
-      comment
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/upsert`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        tmdb_id,
+        rating,
+        comment
+      })
     })
-  })
 
-  loadRating(tmdb_id)
-}
+    loadRating(tmdb_id)
+  }
 
 
   return (

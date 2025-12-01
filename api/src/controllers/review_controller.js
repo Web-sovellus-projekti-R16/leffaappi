@@ -69,14 +69,11 @@ export const editReview = async (req, res) => {
 export const removeReview = async (req, res) => {
   try {
     const account_id = req.user.id
-    const tmdb_id = req.params.tmdb_id
+    const review_id = req.params.review_id
     
-    if (!tmdb_id) return res.status(400).json({ error: "tmdb_id is required"})
+    if (!review_id) return res.status(400).json({ error: "review_id is required"})
 
-    const movieId = await resolveMovieId(tmdb_id)
-
-    if (!movieId) return res.status(404).json({ error: "Movie not found" })
-    const result = await deleteReview(account_id, movieId)
+    const result = await deleteReview(review_id, account_id)
     if (result.rows.length === 0) return res.status(404).json({ error: "Review not found" })
     res.json({ success: true })
   } catch (err) {

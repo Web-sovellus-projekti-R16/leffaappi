@@ -9,6 +9,6 @@ router.get("/movie/tmdb/:tmdb_id", movieReviews)
 router.post("/upsert", authMiddleware, addReview)
 router.get("/account", authMiddleware, userReviews)
 router.put("/:id", authMiddleware, editReview)
-router.delete("/tmdb/:tmdb_id", authMiddleware, removeReview)
+router.delete("/:review_id", authMiddleware, removeReview)
 
 export default router

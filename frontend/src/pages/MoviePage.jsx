@@ -14,17 +14,29 @@ export default function MoviePage() {
   const userEmail = payload?.email
   const [favorites, setFavorites] = useState([])
 
-
+  async function loadReviews(tmdbId) {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdbId}`)
+        if (!res.ok) return
+        
+        const reviews = await res.json()
+        setReviews(reviews)
+      
+    } catch (err) {
+      console.error("Reviews load error:", err)
+    }
+  }
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/tmdb/${id}`)
-        if (!res.ok) return
+        // Loading movie data
+        const resMovie = await fetch(`${import.meta.env.VITE_API_URL}/movies/tmdb/${id}`)
+        if (!resMovie.ok) return
 
-        const raw = await res.json()
+        const raw = await resMovie.json()
 
-        setMovie({
+        const movieData = {
           tmdb_id: raw.id,
           title: raw.title,
           overview: raw.overview,
@@ -35,7 +47,12 @@ export default function MoviePage() {
           poster_path: raw.poster_path
             ? `https://image.tmdb.org/t/p/w500${raw.poster_path}`
             : null
-        })
+        }
+
+        setMovie(movieData)
+
+        // Loading review data
+        loadReviews(movieData.tmdb_id)
       } catch (err) {
         console.error("Movie load error:", err)
       }
@@ -43,37 +60,6 @@ export default function MoviePage() {
 
     load()
   }, [id])
-
-  useEffect(() => {
-    async function loadFavorites() {
-      if (!token) return
-
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
-
-      if (res.ok) {
-        const data = await res.json()
-        setFavorites(data.map(m => m.tmdb_id))
-      }
-    }
-    loadFavorites()
-  }, [token])
-
-
-  async function loadReviews(tmdbId) {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdbId}`)
-    if (!res.ok) return
-    const data = await res.json()
-    setReviews(data)
-  }
-
-  useEffect(() => {
-    if (movie) loadReviews(movie.tmdb_id)
-  }, [movie])
 
   async function submitReview(rating, comment) {
     if (!token) return

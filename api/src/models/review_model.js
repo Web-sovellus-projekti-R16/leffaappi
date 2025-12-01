@@ -14,10 +14,10 @@ export const updateReview = async (review_id, account_id, rating, comment) => {
   )
 }
 
-export const deleteReview = async (accountId, movieId) => {
+export const deleteReview = async (reviewId, accountId) => {
   return await pool.query(
-    "DELETE FROM review WHERE account_id=$1 AND movie_id=$2 RETURNING review_id",
-    [accountId, movieId]
+    "DELETE FROM review WHERE review_id=$1 AND account_id=$2 RETURNING review_id",
+    [reviewId, accountId]
   )
 }
 
