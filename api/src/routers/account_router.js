@@ -17,4 +17,7 @@ router.post("/refresh", refreshAccessToken)
 router.get("/profile", authMiddleware, getProfile)
 router.put("/delete", authMiddleware, deleteAccount)
 
+router.get("/logout", logoutAccount);
+
+
 export default router
