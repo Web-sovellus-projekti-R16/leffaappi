@@ -125,7 +125,7 @@ export const deleteAccount = async (req, res) => {
             });
         }
 
-        const accountId = req.user.id;
+        const accountId = req.user.id; 
         const result = await softDeleteAccount(accountId);
 
         if (result.rowCount === 0) {
