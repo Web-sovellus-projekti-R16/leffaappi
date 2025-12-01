@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 import { insertAccount, 
         findAccountByEmail,
         softDeleteAccount,
-        permanentlyDeleteExpiredAccounts } from '../models/account_model.js'
+        permanentlyDeleteExpiredAccounts,
+        restoreAccount as restoreAccountModel } from '../models/account_model.js'
 
 export const createAccount = async (req, res) => {
     try {
@@ -142,7 +143,6 @@ export const deleteAccount = async (req, res) => {
     }
 };
 
-
 export const getProfile = async (req, res) => {
     try {
         const { id, email } = req.user
@@ -151,6 +151,45 @@ export const getProfile = async (req, res) => {
             user: { id, email }
         })
     } catch (err) {
+        res.status(500).json({ error: "Server error" })
+    }
+}
+
+export const restoreAccount = async (req, res) => {
+    try {
+        const { email, password } = req.body
+
+        if (!email || !password) {
+            return res.status(400).json({ error: "Email and password is required" })
+        }
+        
+        const result = await findAccountByEmail(email)
+
+        if (result.rowCount === 0) {
+            return res.status(401).json({ error: "Invalid Email or Password" })
+        }
+
+        const account = result.rows[0]
+
+        if (!account.is_deleted) {
+            return res.status(400).json({
+                error: "Account is not deleted"
+            })
+        }
+
+        const validatePassword = await bcrypt.compare(password, account.password_hash)
+
+        if (!validatePassword) {
+            return res.status(401).json({ error: "Invalid Password" })
+        }
+
+        const restoreResult = await restoreAccountModel(account.account_id)
+
+        if (restoreResult.rowCount === 0) {
+            return res.status(500).json({ error: "Could not restore account" })
+        }
+    } catch (err) {
+        console.error("Account restore error:", err)
         res.status(500).json({ error: "Server error" })
     }
 }

@@ -4,7 +4,8 @@ import { createAccount,
         logoutAccount, 
         refreshAccessToken,
         deleteAccount,
-        getProfile } from '../controllers/account_controller.js'
+        getProfile,
+        restoreAccount } from '../controllers/account_controller.js'
 import { authMiddleware } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
@@ -18,6 +19,6 @@ router.get("/profile", authMiddleware, getProfile)
 router.put("/delete", authMiddleware, deleteAccount)
 
 router.get("/logout", logoutAccount);
-
+router.post("/restore", restoreAccount);
 
 export default router

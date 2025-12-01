@@ -28,3 +28,11 @@ export const permanentlyDeleteExpiredAccounts = async () => {
         AND account_removed <= CURRENT_DATE - INTERVAL '14 days';`
     return await pool.query(query)
 }
+
+export const restoreAccount = async (accountId) => {
+    return await pool.query(`
+        UPDATE account
+        SET is_deleted = FALSE, deleted_at = NULL
+        WHERE account_id = $1 AND is_deleted = TRUE
+        RETURNING account_id`, accountId)
+}

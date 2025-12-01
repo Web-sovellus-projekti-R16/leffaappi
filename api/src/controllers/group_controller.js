@@ -24,7 +24,7 @@ const validateGroupId = (groupId) => {
 export const createGroupController = async (req, res) => {
   try {
     const { name, description, ownerEmail } = req.body;
-    const ownerId = req.user.account_id;
+    const ownerId = req.user.id;
 
     if (!ownerId) {
         console.error("Authentication Error: req.user.account_id is missing or null.");
