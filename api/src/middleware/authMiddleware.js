@@ -11,19 +11,7 @@ export const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        
-        const userId = decoded.id || decoded.account_id || decoded.user_id || decoded.user
-        
-        if (!userId) {
-            console.error("Token decoded successfully, but no user ID found in payload. Decoded payload:", decoded);
-            return res.status(401).json({ error: "Invalid token structure: Missing user ID." });
-        }
-        
-        req.user = { 
-            account_id: Number(userId), 
-            email: decoded.email
-        };
-
+        req.user = decoded 
         next()
     } catch (err) {
         console.error("JWT Verification Error:", err.message);
