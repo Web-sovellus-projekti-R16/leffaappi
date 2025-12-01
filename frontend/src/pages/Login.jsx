@@ -8,26 +8,34 @@ export default function Login() {
   const navigate = useNavigate()
 
   const logins = async (e) => {
-  e.preventDefault()
+    e.preventDefault()
 
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/account/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ email, password })
-  })
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/account/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password })
+    })
 
-  const data = await res.json()
+    const data = await res.json()
 
-  if (!res.ok) {
-    alert(data.error || "Login failed")
-    return
+    if (!res.ok) {
+      alert(data.error || "Login failed")
+      return
+    }
+
+    localStorage.setItem("token", data.token)
+    
+    if (data.account && data.account.email) {
+        localStorage.setItem("email", data.account.email)
+    }
+    
+    if (data.account && data.account.id) {
+        localStorage.setItem("userId", data.account.id) 
+    }
+
+    navigate("/home")
   }
-
-  localStorage.setItem("token", data.token)
-
-  navigate("/home")
-}
 
 
   return (
