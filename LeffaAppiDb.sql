@@ -1,3 +1,4 @@
+drop table if exists account_group_request cascade;
 DROP TABLE IF EXISTS account CASCADE;
 DROP TABLE IF EXISTS account_group CASCADE;
 DROP TABLE IF EXISTS "group" CASCADE;
@@ -41,4 +42,14 @@ CREATE TABLE review (
 	created_at TIMESTAMP DEFAULT NOW(),
 	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
 	FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
+);
+
+create table account_group_request (
+    request_id serial primary key,
+    account_id int not null,
+    group_id int not null,
+    requested_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES "group"(group_id) ON DELETE CASCADE,
+    unique (account_id, group_id)
 );
