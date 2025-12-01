@@ -25,6 +25,7 @@ CREATE TABLE account_group (
 	group_id INT NOT NULL,
 	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
 	FOREIGN KEY (group_id) REFERENCES "group"(group_id) ON DELETE CASCADE
+	UNIQUE (account_id, group_id)
 );
 
 CREATE TABLE movie (
