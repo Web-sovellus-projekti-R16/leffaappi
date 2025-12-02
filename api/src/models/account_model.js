@@ -7,8 +7,15 @@ export const insertAccount = async (email, hashedPassword) => {
 export const findAccountByEmail = async (email) => {
     const query = `
         SELECT * FROM account 
-        WHERE email = $1 AND is_deleted = false;`
+        WHERE email = $1`
     return await pool.query(query, [email])
+}
+
+export const findDeletedAccount = async (email) => {
+    return await pool.query(`
+        SELECT account_id, password_hash
+        FROM account
+        WHERE email = $1 AND is_deleted = TRUE`, [email])
 }
 
 export const softDeleteAccount = async (accountId) => {
@@ -32,7 +39,7 @@ export const permanentlyDeleteExpiredAccounts = async () => {
 export const restoreAccount = async (accountId) => {
     return await pool.query(`
         UPDATE account
-        SET is_deleted = FALSE, deleted_at = NULL
+        SET is_deleted = FALSE, account_removed = NULL
         WHERE account_id = $1 AND is_deleted = TRUE
-        RETURNING account_id`, accountId)
+        RETURNING account_id, email, password_hash`, [accountId])
 }

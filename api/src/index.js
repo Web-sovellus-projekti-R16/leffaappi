@@ -8,9 +8,6 @@ import movieRouter from "./routers/movie_router.js";
 import accountRouter from "./routers/account_router.js";
 import groupRouter from "./routers/group_router.js";
 
-
-console.log("JWT_SECRET at boot:", process.env.JWT_SECRET);
-
 const app = express();
 const port = process.env.PORT;
 

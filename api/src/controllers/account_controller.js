@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { insertAccount, 
         findAccountByEmail,
+        findDeletedAccount,
         softDeleteAccount,
         permanentlyDeleteExpiredAccounts,
         restoreAccount as restoreAccountModel } from '../models/account_model.js'
@@ -44,12 +45,7 @@ export const loginAccount = async (req, res) => {
         }
 
         const account = result.rows[0]
-
-        if (account.is_deleted) {
-            return res.status(403).json({
-                error: "Account is deleted. You can restore it within 14 days."
-            })
-        }
+        
         const validatePassword = await bcrypt.compare(password, account.password_hash)
 
         if (!validatePassword) {
@@ -156,38 +152,56 @@ export const getProfile = async (req, res) => {
 }
 
 export const restoreAccount = async (req, res) => {
+    const { email, password } = req.body
     try {
-        const { email, password } = req.body
-
-        if (!email || !password) {
-            return res.status(400).json({ error: "Email and password is required" })
-        }
+        const accountRes = await findDeletedAccount(email)
         
-        const result = await findAccountByEmail(email)
-
-        if (result.rowCount === 0) {
-            return res.status(401).json({ error: "Invalid Email or Password" })
+        if (accountRes.rowCount === 0) {
+            return res.status(404).json({ ok: false, error: "Account not found or not deleted" })
         }
 
-        const account = result.rows[0]
-
-        if (!account.is_deleted) {
-            return res.status(400).json({
-                error: "Account is not deleted"
-            })
-        }
+        const account = accountRes.rows[0]
 
         const validatePassword = await bcrypt.compare(password, account.password_hash)
 
         if (!validatePassword) {
-            return res.status(401).json({ error: "Invalid Password" })
+            return res.status(401).json({ ok: false, error: "Invalid Password" })
         }
 
         const restoreResult = await restoreAccountModel(account.account_id)
 
         if (restoreResult.rowCount === 0) {
-            return res.status(500).json({ error: "Could not restore account" })
+            return res.status(500).json({ ok: false, error: "Could not restore account" })
         }
+
+        const accessToken = jwt.sign(
+            { id: account.account_id, email: account.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        )
+
+        const refreshToken = jwt.sign(
+            { id: account.account_id, email: account.email },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: "2h" }
+        )
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+        return res.json({
+            ok: true,
+            message: "Account restored",
+            token: accessToken,
+            account: {
+                id: account.account_id,
+                email: account.email
+            }
+        })
     } catch (err) {
         console.error("Account restore error:", err)
         res.status(500).json({ error: "Server error" })
