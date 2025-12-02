@@ -19,7 +19,32 @@ export default function Login() {
 
     const data = await res.json()
 
+    if (res.status === 403 && data.error?.includes("Account is deleted")) {
+      const restoreRes = await fetch(`${import.meta.env.VITE_API_URL}/account/restore`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password })
+      })
+
+      const restoreData = await restoreRes.json()
+
+      if (!restoreData.ok) {
+        alert(restoreData.error || "Restore failed")
+        return
+      }
+
+      localStorage.setItem("token", restoreData.token)
+      localStorage.setItem("email", restoreData.account.email)
+      localStorage.setItem("userId", restoreData.account.id)
+      
+      alert("Your account has been restored and you're now signed in.")
+      navigate("/home")
+      return
+    }
+
     if (!res.ok) {
+      
       alert(data.error || "Login failed")
       return
     }
@@ -36,7 +61,6 @@ export default function Login() {
 
     navigate("/home")
   }
-
 
   return (
     <div className="login-container">
