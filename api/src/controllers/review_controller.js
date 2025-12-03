@@ -8,6 +8,8 @@ import {
 } from "../models/review_model.js"
 import { getMovieByTmdbId, insertMovie } from "../models/movie_model.js"
 import { searchMovieByTmdbId } from "../helpers/tmdbService.js"
+import { pool } from "../helpers/db.js";
+
 
 async function resolveMovieId(tmdb_id) {
   const dbMovie = await getMovieByTmdbId(tmdb_id)
@@ -27,8 +29,8 @@ export const addReview = async (req, res) => {
   try {
     const account_id = req.user.id
     const { tmdb_id, rating, comment } = req.body
-    if (!tmdb_id || !rating) {
-      return res.status(400).json({ error: "tmdb_id and rating are required" })
+    if (!tmdb_id) {
+      return res.status(400).json({ error: "tmdb_id is required" })
     }
     const movieId = await resolveMovieId(tmdb_id)
     if (!movieId) return res.status(404).json({ error: "Movie not found" })
@@ -103,3 +105,36 @@ export const userReviews = async (req, res) => {
     res.status(500).json({ error: "Server error" })
   }
 }
+
+export const setFavorite = async (req, res) => {
+  try {
+    const account_id = req.user.id;
+    const { tmdb_id, favorite } = req.body; // favorite = true / false
+
+    if (!tmdb_id) {
+      return res.status(400).json({ error: "tmdb_id is required" });
+    }
+    const movieId = await resolveMovieId(tmdb_id);
+    if (!movieId) return res.status(404).json({ error: "Movie not found" });
+    const existing = await getUserReviewForMovie(account_id, movieId);
+
+    if (existing.rows.length > 0) {
+      const updated = await pool.query(
+        "UPDATE review SET favorite=$1 WHERE review_id=$2 RETURNING *",
+        [favorite, existing.rows[0].review_id]
+      );
+
+      return res.json({ message: "favorite-updated", review: updated.rows[0] });
+    }
+    const inserted = await pool.query(
+      "INSERT INTO review (account_id, movie_id, favorite) VALUES ($1, $2, $3) RETURNING *",
+      [account_id, movieId, favorite]
+    );
+
+    return res.json({ message: "favorite-created", review: inserted.rows[0] });
+
+  } catch (err) {
+    console.error("setFavorite error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

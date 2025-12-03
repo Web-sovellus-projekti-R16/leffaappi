@@ -12,7 +12,7 @@ export default function MoviePage() {
   const [reviews, setReviews] = useState([])
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null
   const userEmail = payload?.email
-  const [favorites, setFavorites] = useState([])
+  const [isFavorite, setIsFavorite] = useState(false);
 
   async function loadReviews(tmdbId) {
     try {
@@ -21,7 +21,9 @@ export default function MoviePage() {
         
         const reviews = await res.json()
         setReviews(reviews)
-      
+        const revz = reviews.find(r => r.email === userEmail);
+        setIsFavorite(revz?.favorite === true);
+
     } catch (err) {
       console.error("Reviews load error:", err)
     }
@@ -90,19 +92,48 @@ export default function MoviePage() {
 
     loadReviews(movie.tmdb_id)
   }
+
+  async function addFavorite() {
+    if (!token || !movie) return;
+
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {method: "POST",headers: 
+      {"Authorization": `Bearer ${token}`,"Content-Type": "application/json"},
+      body: JSON.stringify({ tmdb_id: movie.tmdb_id, favorite: true })
+    });
+
+    setIsFavorite(true);
+  }
+
+async function removeFavorite() {
+    if (!token || !movie) return;
+
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {method: "POST",headers:
+      {"Authorization": `Bearer ${token}`,"Content-Type": "application/json"},
+      body: JSON.stringify({ tmdb_id: movie.tmdb_id, favorite: false })
+    });
+
+    setIsFavorite(false);
+  }
+
   
   if (!movie) return <p className="loading">Loading movie...</p>
-  
-  const average = reviews.length > 0? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : null
+
+  const filterreviev = reviews.filter(r => r.rating !== null);
+  const average = filterreviev.length > 0? (filterreviev.reduce((sum, r) => sum + r.rating, 0) / filterreviev.length).toFixed(1) : null
 
   return (
     <div className="movie-page">
       <Link to={target} className="favorites-back">Back to Home</Link>
 
       <div className="movie-header">
-        {movie.poster_path && (
-          <img className="poster" src={movie.poster_path} alt={movie.title} />
-        )}        
+        <div className="poster-wrapper">
+          {movie.poster_path && (
+            <img className="poster" src={movie.poster_path} alt={movie.title} />
+          )}
+          {token && (!isFavorite ? (<button className="favorite-add-btn" onClick={addFavorite}>Add to favorites</button>) : 
+            (<button className="favorite-add-btn" disabled>Favorited</button>)
+          )}
+      </div>        
         
         <div className="info">
           <h1>{movie.title}</h1>
@@ -113,7 +144,7 @@ export default function MoviePage() {
           <p className="meta">Languages: {movie.languages.join(", ")}</p>
           <p className="overview">{movie.overview}</p>
           <p className="avg-label">Average reviews</p>
-        <AvgRating reviews={reviews} />
+        <AvgRating reviews={filterreviev} />
 
           {token && (
             <div className="rating-wrapper">
@@ -126,9 +157,9 @@ export default function MoviePage() {
 
       <h2>Reviews</h2>
       <div className="reviews-list">
-        {reviews.length === 0 && <p>No reviews yet</p>}
+        {filterreviev.length === 0 && <p>No reviews yet</p>}
 
-        {reviews.map(r => (
+        {filterreviev.map(r => (
           <div key={r.review_id} className="review-box">
 
             <p><strong>{r.email}</strong></p>

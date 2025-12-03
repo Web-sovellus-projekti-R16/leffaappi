@@ -125,4 +125,20 @@
 .review-delete-btn:hover {
   background: #e05555;
 }
+.poster-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.favorite-add-btn,
+.favorite-remove-btn {
+  margin-top: 12px;
+  width: 150px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
 

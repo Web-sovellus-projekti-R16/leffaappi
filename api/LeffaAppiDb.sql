@@ -40,8 +40,9 @@ CREATE TABLE review (
     rating INTEGER CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
 	favorite BOOLEAN DEFAULT false,
-	created_at TIMESTAMP DEFAULT NOW(),
-	FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
-    FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE,
-    UNIQUE(account_id, movie_id)
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 );
+
+
