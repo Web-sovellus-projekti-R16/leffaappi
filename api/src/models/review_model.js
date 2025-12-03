@@ -16,7 +16,7 @@ export const updateReview = async (review_id, account_id, rating, comment) => {
 
 export const deleteReview = async (reviewId, accountId) => {
   return await pool.query(
-    "DELETE FROM review WHERE review_id=$1 AND account_id=$2 RETURNING review_id",
+    "UPDATE review SET rating = NULL, comment = NULL WHERE review_id=$1 AND account_id=$2 RETURNING *;",
     [reviewId, accountId]
   )
 }
