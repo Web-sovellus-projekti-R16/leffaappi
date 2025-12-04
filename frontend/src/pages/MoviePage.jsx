@@ -13,16 +13,17 @@ export default function MoviePage() {
   const payload = token ? JSON.parse(atob(token.split(".")[1])) : null
   const userEmail = payload?.email
   const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function loadReviews(tmdbId) {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdbId}`)
-        if (!res.ok) return
-        
-        const reviews = await res.json()
-        setReviews(reviews)
-        const revz = reviews.find(r => r.email === userEmail);
-        setIsFavorite(revz?.favorite === true);
+      if (!res.ok) return
+
+      const reviews = await res.json()
+      setReviews(reviews)
+      const revz = reviews.find(r => r.email === userEmail);
+      setIsFavorite(revz?.favorite === true);
 
     } catch (err) {
       console.error("Reviews load error:", err)
@@ -31,13 +32,16 @@ export default function MoviePage() {
 
   useEffect(() => {
     async function load() {
+      setLoading(true)
       try {
         // Loading movie data
-        const resMovie = await fetch(`${import.meta.env.VITE_API_URL}/movies/tmdb/${id}`)
-        if (!resMovie.ok) return
-
+        const resMovie = await fetch(`${import.meta.env.VITE_API_URL}/movies/tmdb?tmdb_id=${id}`)
+        if (!resMovie.ok) {
+          return
+        } 
+      
         const raw = await resMovie.json()
-
+        
         const movieData = {
           tmdb_id: raw.id,
           title: raw.title,
@@ -57,6 +61,8 @@ export default function MoviePage() {
         loadReviews(movieData.tmdb_id)
       } catch (err) {
         console.error("Movie load error:", err)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -96,45 +102,45 @@ export default function MoviePage() {
   async function addFavorite() {
     if (!token || !movie) return;
 
-    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {method: "POST",headers: 
-      {"Authorization": `Bearer ${token}`,"Content-Type": "application/json"},
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {
+      method: "POST", headers:
+        { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ tmdb_id: movie.tmdb_id, favorite: true })
     });
 
     setIsFavorite(true);
   }
 
-async function removeFavorite() {
+  async function removeFavorite() {
     if (!token || !movie) return;
 
-    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {method: "POST",headers:
-      {"Authorization": `Bearer ${token}`,"Content-Type": "application/json"},
+    await fetch(`${import.meta.env.VITE_API_URL}/reviews/favorite`, {
+      method: "POST", headers:
+        { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ tmdb_id: movie.tmdb_id, favorite: false })
     });
 
     setIsFavorite(false);
   }
-
-  
   if (!movie) return <p className="loading">Loading movie...</p>
-
   const filterreviev = reviews.filter(r => r.rating !== null);
-  const average = filterreviev.length > 0? (filterreviev.reduce((sum, r) => sum + r.rating, 0) / filterreviev.length).toFixed(1) : null
+  const average = filterreviev.length > 0 ? (filterreviev.reduce((sum, r) => sum + r.rating, 0) / filterreviev.length).toFixed(1) : null
 
   return (
     <div className="movie-page">
       <Link to={target} className="favorites-back">Back to Home</Link>
+      {loading && <p className="loading">Loading...</p>}
 
       <div className="movie-header">
         <div className="poster-wrapper">
           {movie.poster_path && (
             <img className="poster" src={movie.poster_path} alt={movie.title} />
           )}
-          {token && (!isFavorite ? (<button className="favorite-add-btn" onClick={addFavorite}>Add to favorites</button>) : 
+          {token && (!isFavorite ? (<button className="favorite-add-btn" onClick={addFavorite}>Add to favorites</button>) :
             (<button className="favorite-add-btn" disabled>Favorited</button>)
           )}
-      </div>        
-        
+        </div>
+
         <div className="info">
           <h1>{movie.title}</h1>
           <p className="meta">
@@ -144,7 +150,7 @@ async function removeFavorite() {
           <p className="meta">Languages: {movie.languages.join(", ")}</p>
           <p className="overview">{movie.overview}</p>
           <p className="avg-label">Average reviews</p>
-        <AvgRating reviews={filterreviev} />
+          <AvgRating reviews={filterreviev} />
 
           {token && (
             <div className="rating-wrapper">
@@ -166,7 +172,7 @@ async function removeFavorite() {
             <p>⭐ {r.rating} / 5</p>
             <p>{r.comment}</p>
             <p>{new Date(r.created_at).toLocaleString()}</p>
-            {r.email === userEmail && (<button className="review-delete-btn" onClick={() => deleteReview(r.review_id)}>Delete review</button>)}
+            {r.email === userEmail && (<button className="secondary-btn" onClick={() => deleteReview(r.review_id)}>Delete review</button>)}
           </div>
         ))}
       </div>

@@ -54,7 +54,7 @@ export default function MovieExplorer() {
         setError(null);
         setMovies([]);
         try {
-            const res = await fetch(`http://localhost:3001/movies/search/?${searchBy}=${query}`);
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/search/?${searchBy}=${query}`);
             if (res.status === 404) {
                 setError(`No movie found for: "${query}"`);
                 return;
@@ -113,7 +113,7 @@ export default function MovieExplorer() {
                         }
                     }} />
 
-                <button onClick={fetchMovie}>Search</button>
+                <button className='primary-btn' onClick={fetchMovie}>Search</button>
             </div>
 
             {loading && <p className='loading'>Loading...</p>}
@@ -128,7 +128,7 @@ export default function MovieExplorer() {
                         </div>
                         {m.poster_path && <img src={m.poster_path} alt={m.title} />}
                         {isSignedIn && (
-                            <button className='fav-button'
+                            <button className='primary-btn'
                                 disabled={favorites.includes(m.tmdb_id)}
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); addFavorite(m.tmdb_id); }}>
                                 {favorites.includes(m.tmdb_id) ? "Favorited" : "Add to favorites"}

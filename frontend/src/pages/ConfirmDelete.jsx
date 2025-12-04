@@ -69,7 +69,7 @@ export default function ConfirmDelete() {
       />
 
       <button
-        className="confirm-delete-btn"
+        className="secondary-btn"
         onClick={handleConfirmDelete}
       >
         Confirm Delete

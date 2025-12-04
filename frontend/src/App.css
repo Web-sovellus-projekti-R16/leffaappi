@@ -1,0 +1,105 @@
+:root {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #222;
+}
+
+body {
+    margin: 0;
+    background-color: #ececec;
+}
+
+h1, h2, h3 {
+    color: #1a1a1a;
+}
+
+.navbar {
+    background-position: center 70%;
+    background-size: cover;   
+}
+
+a {
+    color: #4da6ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+select,
+input,
+button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease;
+}
+
+select {
+    cursor: pointer;
+    background-color: #fff;
+}
+
+input {
+    flex: 1;
+    min-width: 220px;
+}
+
+input:focus,
+select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+.primary-btn {
+    background-color: #1b242e;
+    color: #fff;
+    border: #00a329 solid 2px;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.primary-btn:hover {
+    background-color: #444;
+}
+
+.confirm-delete-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.secondary-btn {
+    background-color: #1b242e;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: #f55 solid 2px ;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.secondary-btn:hover {
+    background-color: #444;
+}
+
+.confirm-delete-cancel {
+    text-decoration: none;
+    color: #007bff;
+    display: block;
+}
+
+.error {
+    color: #f55;
+    font-weight: 500;
+}
+
+.loading {
+    color: #444;
+    font-style: italic;
+}

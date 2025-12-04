@@ -17,14 +17,12 @@ export default function Navig() {
   }
 
   return (
-    <nav className="navbar" style={{ backgroundImage: `
-                                                  url(${bg})`,
-                                      backgroundPosition: "center 68%",
-                                      backgroundSize: "cover"}}>
+    <nav className="navbar" style={{ 
+      backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)),
+                    linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0)),
+                    url(${bg})`}}>
 
       <NavLink to={localStorage.getItem("token") ? "/home" : "/"} className="navlink">Home</NavLink>
-      <NavLink to="/search" className="navlink">Search</NavLink>
-
       <NavLink to="/groups" className="navlink">Groups</NavLink>
       <NavLink to="/favorites" className="navlink">Favorites</NavLink>
       <NavLink to={localStorage.getItem("token") ? "/account" : "/login"} 
@@ -33,7 +31,7 @@ export default function Navig() {
       {localStorage.getItem("token") && (
         <button
           onClick={logout}
-          className="navlink logout-btn"
+          className="primary-btn"
         >
           Logout
         </button>

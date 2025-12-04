@@ -87,7 +87,7 @@ export default function Login() {
           />
         </div>
 
-        <button type="submit" className="login-btn">Sign In</button>
+        <button type="submit" className="primary-btn">Sign In</button>
       </form>
 
       <p className="login-register-text">

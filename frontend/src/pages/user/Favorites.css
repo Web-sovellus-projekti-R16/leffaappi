@@ -2,15 +2,6 @@
   padding: 2rem;
 }
 
-.favorites-back {
-  color: #4da6ff;
-  text-decoration: none;
-}
-
-.favorites-back:hover {
-  text-decoration: underline;
-}
-
 .favorites-title {
   margin-top: 1rem;
 }
@@ -33,20 +24,6 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   margin-bottom: 10px;
-}
-
-
-.favorites-delete-btn {
-  background-color: #f55;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.favorites-delete-btn:hover {
-  background-color: #d44;
 }
 
 .favorites-poster {

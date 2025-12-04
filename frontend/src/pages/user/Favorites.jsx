@@ -51,6 +51,24 @@ export default function Favorites() {
           })
         )
 
+        const list = detailedFavorites.filter(Boolean)
+        setFavorites(list)
+        list.forEach(movie => loadRating(movie.tmdb_id))
+      } catch (err) {
+        console.error("Failed to load favorites:", err);
+      } finally {
+        setLoading(false);
+      }
+  }
+
+  useEffect(() => {
+    async function load() {
+      loadFavorites()
+    }
+
+    load();
+  }, [])
+
   const handleUpdateFavorite = async (moveId, grade, review) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/favorites`, {
@@ -128,8 +146,7 @@ export default function Favorites() {
 
   return (
     <div className="favorites-container">
-      <Link to="/home" className="favorites-back">Back to Home</Link>
-
+      
       <h2 className="favorites-title">My Favorites</h2>
 
       <input
@@ -148,20 +165,14 @@ export default function Favorites() {
                 <h3>{movie.title}</h3>
               </div>
             </Link>
-            {ratings[movie.tmdb_id] && (
-              <>
-                {ratings[movie.tmdb_id].some(r => r.email === userEmail) ? (
-                  <AvgRating reviews={ratings[movie.tmdb_id]} />
-                ) : (
-                  <div className="favorites-rate-box">
-                    <h4 className="favorites-rate-title">Rate this movie</h4>
-                    <Starss onSubmit={(rating, comment) => submitReview(movie.tmdb_id, rating, comment)} />
-                  </div>
-                )}
-              </>
+            {ratings[movie.tmdb_id] && ratings[movie.tmdb_id].some(r => r.email === userEmail && r.rating !== null) ? (<AvgRating reviews={ratings[movie.tmdb_id]} />) : 
+            (
+              <div className="favorites-rate-box">
+                <h4 className="favorites-rate-title">Rate this movie</h4>
+                <Starss onSubmit={(rating, comment) => submitReview(movie.tmdb_id, rating, comment)} />
+              </div>
             )}
-            <span className="favorites-id">{movie.movie_id}</span>
-            <button className="favorites-delete-btn" onClick={() => handleRemoveFavorite(movie.review_id)}>Delete</button>
+            <button className="secondary-btn" onClick={() => handleRemoveFavorite(movie.tmdb_id)}>Delete</button>
           </div>
         ))}
       </div>

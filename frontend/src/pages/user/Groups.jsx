@@ -201,11 +201,10 @@ export default function Groups() {
 
   return (
     <div className="groups-container">
-      <Link to="/home" className="groups-back">Back to Home</Link>
 
       <div className="groups-header">
         <h2>Groups</h2>
-        <button type="button" className="groups-create-btn" onClick={handleCreateGroup}>
+        <button type="button" className="primary-btn" onClick={handleCreateGroup}>
           + Create Group
         </button>
       </div>
@@ -258,7 +257,7 @@ export default function Groups() {
             {joinedGroups.map(g => (
               <li key={g.group_id} className="groups-list-item">
                 <span>{g.name}</span>
-                <button type="button" onClick={() => handleLeaveGroup(g.group_id)}>
+                <button type="button" className="secondary-btn" onClick={() => handleLeaveGroup(g.group_id)}>
                   Leave
                 </button>
               </li>
@@ -279,8 +278,8 @@ export default function Groups() {
                 
                 {/* BUTTON TO MANAGE MEMBERS */}
                 <button 
-                  type="button" 
-                  className="manage-members-btn"
+                  type="button"
+                  className="primary-btn"
                   onClick={() => {
                     setSelectedGroupId(g.group_id);
                     setShowMembersModal(true);
@@ -291,7 +290,8 @@ export default function Groups() {
                 
                 {/* BUTTON TO MANAGE JOIN REQUESTS */}
                 <button 
-                  type="button" 
+                  type="button"
+                  className="primary-btn" 
                   onClick={() => {
                     setSelectedGroupId(g.group_id);
                     setShowRequestsModal(true);
