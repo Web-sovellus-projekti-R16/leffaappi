@@ -2,7 +2,11 @@ import { getCurrentlyOnTheatres,
   searchMoviesByTitle, searchMoviesByGenre, searchMoviesByActor,
   searchMovieByTmdbId } from "../helpers/tmdbService.js";
 import { getMovieByTmdbId,
-  insertMovie } from "../models/movie_model.js";
+  insertMovie,
+  getFavoriteMovies,
+  insertFavoriteMovie,
+  updateFavoriteMovie,
+  deleteFavoriteMovie } from "../models/movie_model.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -65,7 +69,7 @@ export async function getByTmdbId(req, res, next) {
 
     return res.status(200).json(movie);
   } catch (err) {
-    console.error("searchMovieTmdb error:", err)
+    console.error("getByTmdbId error:", err)
     next(err)
   }
 }

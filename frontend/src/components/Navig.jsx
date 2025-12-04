@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import "./Navig.css"
+import bg from "../assets/img/pexels-jplenio-1118873.jpg"
 
 export default function Navig() {
   const navigate = useNavigate()
@@ -16,7 +17,10 @@ export default function Navig() {
   }
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" style={{ backgroundImage: `
+                                                  url(${bg})`,
+                                      backgroundPosition: "center 68%",
+                                      backgroundSize: "cover"}}>
 
       <NavLink to={localStorage.getItem("token") ? "/home" : "/"} className="navlink">Home</NavLink>
       <NavLink to="/search" className="navlink">Search</NavLink>
