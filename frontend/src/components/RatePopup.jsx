@@ -12,8 +12,8 @@ export default function RatePopup({ rating, onClose, onSubmit }) {
         <textarea value={comment}onChange={e => setComment(e.target.value)}placeholder="Write a comment"className="rate-textarea"/>
 
         <div className="rate-buttons">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={() => onSubmit(rating, comment)}>Submit</button>
+          <button className="secondary-btn" onClick={onClose}>Cancel</button>
+          <button className="primary-btn" onClick={() => onSubmit(rating, comment)}>Submit</button>
         </div>
       </div>
     </div>

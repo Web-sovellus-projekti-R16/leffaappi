@@ -82,7 +82,7 @@ export default function Register() {
           />
         </div>
 
-        <button type="submit" className="register-btn">Submit</button>
+        <button type="submit" className="primary-btn">Submit</button>
       </form>
 
       <p className="register-login-text">
