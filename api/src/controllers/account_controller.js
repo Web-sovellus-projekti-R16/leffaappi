@@ -139,6 +139,24 @@ export const deleteAccount = async (req, res) => {
     }
 };
 
+export const hardDeleteAccount = async (req, res) => {
+    try {
+        const accountId = req.user.id; 
+        const result = await permanentlyDeleteExpiredAccounts(accountId);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Account not found" });
+        }
+
+        res.json({
+            message: "Account is flagged as deleted. It will be permanently removed in 14 days."
+        });
+    } catch (err) {
+        console.error("Hard delete account error:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+}
+
 export const getProfile = async (req, res) => {
     try {
         const { id, email } = req.user

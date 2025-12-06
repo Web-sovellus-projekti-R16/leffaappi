@@ -28,6 +28,13 @@ export const softDeleteAccount = async (accountId) => {
     return await pool.query(query, [accountId])
 }
 
+export const hardDeleteAccount = async (accountId) => {
+    const query = `
+        DELETE FROM account
+        WHERE account_id = $1;`
+    return await pool.query(query, [accountId])
+}
+
 export const permanentlyDeleteExpiredAccounts = async () => {
     const query = `
         DELETE FROM account
