@@ -7,6 +7,7 @@ import reviewRouter from "./routers/review_router.js"
 import movieRouter from "./routers/movie_router.js";
 import accountRouter from "./routers/account_router.js";
 import groupRouter from "./routers/group_router.js";
+import "./jobs/accountCleanupJob.js";
 
 const app = express();
 const port = process.env.PORT;

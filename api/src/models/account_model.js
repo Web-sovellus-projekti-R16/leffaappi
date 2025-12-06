@@ -24,7 +24,7 @@ export const softDeleteAccount = async (accountId) => {
         SET is_deleted = true,
             account_removed = CURRENT_DATE
         WHERE account_id = $1
-        RETURNING *;`
+        `
     return await pool.query(query, [accountId])
 }
 
@@ -38,8 +38,8 @@ export const hardDeleteAccount = async (accountId) => {
 export const permanentlyDeleteExpiredAccounts = async () => {
     const query = `
         DELETE FROM account
-        WHERE is_deleted = true
-        AND account_removed <= CURRENT_DATE - INTERVAL '14 days';`
+        WHERE account_removed IS NOT NULL 
+        AND account_removed < NOW() - INTERVAL '14 days';;`
     return await pool.query(query)
 }
 
