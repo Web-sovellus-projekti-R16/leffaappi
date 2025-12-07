@@ -5,6 +5,7 @@ import { createAccount,
         refreshAccessToken,
         deleteAccount,
         getProfile,
+        changePassword,
         restoreAccount } from '../controllers/account_controller.js'
 import { authMiddleware } from '../middleware/authMiddleware.js'
 
@@ -16,6 +17,7 @@ router.post("/logout", logoutAccount)
 router.post("/refresh", refreshAccessToken)
 
 router.get("/profile", authMiddleware, getProfile)
+router.put("/password", authMiddleware, changePassword)
 router.put("/delete", authMiddleware, deleteAccount)
 
 router.get("/logout", logoutAccount);

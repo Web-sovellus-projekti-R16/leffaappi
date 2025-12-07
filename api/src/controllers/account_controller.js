@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { insertAccount, 
         findAccountByEmail,
+        updatePassword,
         findDeletedAccount,
         softDeleteAccount,
         permanentlyDeleteExpiredAccounts,
@@ -109,6 +110,40 @@ export const refreshAccessToken = (req, res) => {
 export const logoutAccount = (req, res) => {
     res.clearCookie("refreshToken")
     return res.json({ message: "Logout succesful" })
+}
+
+export const changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body
+        const id = req.user.id
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({ error: "Old and new password are required" })
+        }
+
+        const result = await findAccountByEmail(req.user.email)
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Account not found" })
+        }
+
+        const account = result.rows[0]
+        const validateOldPass = await bcrypt.compare(oldPassword, account.password_hash)
+        if (!validateOldPass) {
+            return res.status(401).json({ error: "Old password didnt match" })
+        }
+
+        const newHash = await bcrypt.hash(newPassword, 10)
+
+        const updateRes = await updatePassword(id, newHash)
+
+        if (updateRes.rowCount === 0) {
+            return res.status(500).json({ error: "Password not updated"})
+        }
+
+        return res.json({ message: "Password updated successfully" })
+    } catch (err) {
+        console.error("Password change error:", err)
+        res.status(500).json({ error: "Server error" })
+    }
 }
 
 export const deleteAccount = async (req, res) => {
