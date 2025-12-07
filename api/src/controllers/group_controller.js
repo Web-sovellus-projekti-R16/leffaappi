@@ -24,7 +24,7 @@ const validateGroupId = (groupId) => {
 export const createGroupController = async (req, res) => {
   try {
     const { name, description, ownerEmail } = req.body;
-    const ownerId = req.user.id;
+    const ownerId = req.user.id; 
 
     if (!ownerId) {
         console.error("Authentication Error: req.user.account_id is missing or null.");
@@ -85,7 +85,7 @@ export const requestToJoinGroupController = async (req, res) => {
     if (!validatedGroupId) {
       return res.status(400).json({ error: "Invalid Group ID format." });
     }
-    const result = await requestToJoinGroup(req.user.account_id, validatedGroupId); 
+    const result = await requestToJoinGroup(req.user.id, validatedGroupId); 
     return res.status(201).json({ request: result.rows[0] });
   } catch (err) {
     console.error("Join request error:", err);
@@ -137,7 +137,7 @@ export const leaveGroupController = async (req, res) => {
     if (!validatedGroupId) {
       return res.status(400).json({ error: "Invalid Group ID format." });
     }
-    await leaveGroup(req.user.account_id, validatedGroupId);
+    await leaveGroup(req.user.id, validatedGroupId);
     return res.json({ message: "Left group." });
   } catch (err) {
     console.error("Leave group error:", err);
@@ -202,7 +202,7 @@ export const kickGroupMemberController = async (req, res) => {
         return res.status(403).json({ error: "Forbidden. Only the group owner can kick members." });
     }
 
-    if (validatedMemberId === req.user.account_id) {
+    if (validatedMemberId === req.user.id) {
       return res.status(400).json({ error: "Cannot kick self. Use the 'Leave Group' button instead." });
     }
 
