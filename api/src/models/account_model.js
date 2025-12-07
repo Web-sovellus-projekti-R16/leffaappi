@@ -11,6 +11,12 @@ export const findAccountByEmail = async (email) => {
     return await pool.query(query, [email])
 }
 
+export const updatePassword = async (accountId, passwordHash) => {
+    return await pool.query(`UPDATE account
+        SET password_hash = $2
+        WHERE account_id = $1`, [accountId, passwordHash])
+}
+
 export const findDeletedAccount = async (email) => {
     return await pool.query(`
         SELECT account_id, password_hash
