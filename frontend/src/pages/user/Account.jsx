@@ -6,6 +6,11 @@ export default function Account() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
 
+  const [oldPassword, setOldPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [passwordMessage, setPasswordMessage] = useState(null)
+
   useEffect(() => {
     const token = localStorage.getItem("token")
     if (!token) {
@@ -42,7 +47,47 @@ export default function Account() {
   navigate("/confirm-delete");
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault()
+    setPasswordMessage(null)
 
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage("New passwords do not match.")
+      return
+    }
+
+    try {
+      const token = localStorage.getItem("token")
+
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/account/password`, {
+        method: "PUT",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword
+        }),
+        credentials: "include"
+      })
+
+      const data = await result.json()
+
+      if (!result.ok) {
+        setPasswordMessage(data.error || "Failed to change password")
+        return
+      }
+
+      setPasswordMessage("Password updated successfully!")
+      setOldPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (err) {
+      console.error("Password change error:", err)
+      setPasswordMessage("Server error occured while changing password")
+    }
+  }
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete your account. It will be permanently deleted after 14 days."
@@ -89,6 +134,34 @@ export default function Account() {
           </div>
           <span>Edit profile picture</span>
         </div>
+      </div>
+
+      <div className="password-section">
+        <h3>Change Password</h3>
+        <form className="password-form" onSubmit={handleChangePassword}>
+          <input type="password"
+            placeholder="Old password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            required />
+
+          <input type="password"
+            placeholder="New password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required />
+
+          <input type="password"
+            placeholder="Confirm new password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required />
+
+          <button type="submit" className="primary-btn">Change Password</button>
+        </form>
+        {passwordMessage && (
+          <p>{passwordMessage}</p>
+        )}
       </div>
 
       <button className="account-delete-btn" onClick={goToConfirmDelete}>
