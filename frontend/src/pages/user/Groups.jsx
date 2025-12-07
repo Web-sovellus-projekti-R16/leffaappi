@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Groups.css";
 import JoinRequestsModal from "../../components/JoinRequestsModal.jsx";
 import MembersModal from "../../components/MembersModal.jsx";
+import CreateGroupModal from "../../components/CreateGroupModal.jsx";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ export default function Groups() {
   
   const [showRequestsModal, setShowRequestsModal] = useState(false); 
   const [showMembersModal, setShowMembersModal] = useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
 
   const [availableGroups, setAvailableGroups] = useState([]);
   const [joinedGroups, setJoinedGroups] = useState([]);
@@ -127,39 +129,8 @@ export default function Groups() {
     }
   };
 
-  const handleCreateGroup = async () => {
-    const name = prompt("Group name?");
-    if (!name) return;
-    const description = prompt("Group description?");
-
-    const authHeaders = getAuthHeaders();
-    if (!authHeaders) return;
-
-    const ownerEmail = localStorage.getItem("email");
-    if (!ownerEmail) {
-        alert("CRITICAL: Owner email not found in session. Please re-login.");
-        return;
-    }
-
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/group/create`, {
-        method: "POST",
-        headers: authHeaders,
-        body: JSON.stringify({ name, description, ownerEmail })
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || "Creation failed.");
-        return;
-      }
-
-      alert("Group created.");
-      fetchGroups();
-    } catch (err) {
-      console.error("Failed to create group:", err);
-      alert("Server error.");
-    }
+  const handleCreateGroup = () => {
+    setShowCreateGroupModal(true);
   };
 
   const handleLeaveGroup = async (groupId) => {
@@ -201,13 +172,22 @@ export default function Groups() {
 
   return (
     <div className="groups-container">
-
+      <Link to="/home" className="groups-back">Back to Home</Link>
+      
       <div className="groups-header">
         <h2>Groups</h2>
         <button type="button" className="primary-btn" onClick={handleCreateGroup}>
           + Create Group
         </button>
       </div>
+      
+      {/*RENDER CREATE GROUP MODAL */}
+      {showCreateGroupModal && (
+          <CreateGroupModal 
+              onClose={() => setShowCreateGroupModal(false)}
+              onGroupCreated={fetchGroups} 
+          />
+      )}
 
       <div className="groups-search-wrapper">
         <input
