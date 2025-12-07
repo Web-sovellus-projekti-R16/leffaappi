@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import KickConfirmationModal from "./KickConfirmationModal.jsx";
 
+const currentUserId = Number(localStorage.getItem("id")); 
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
@@ -10,11 +12,11 @@ const getAuthHeaders = () => {
   };
 };
 
-const currentUserId = Number(localStorage.getItem("userId"));
 
 export default function MembersModal({ groupId, onClose, groupName, onMemberKicked }) {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [memberToKick, setMemberToKick] = useState(null); 
 
   useEffect(() => {
     fetchMembers();
@@ -49,34 +51,15 @@ export default function MembersModal({ groupId, onClose, groupName, onMemberKick
     }
   };
 
-  const handleKick = async (memberAccountId, memberEmail) => {
-    if (window.confirm(`Are you sure you want to kick ${memberEmail} from ${groupName}?`)) {
-      const authHeaders = getAuthHeaders();
-      if (!authHeaders) return;
-
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/group/kick`, {
-          method: "POST",
-          headers: authHeaders,
-          body: JSON.stringify({ groupId: Number(groupId), memberId: memberAccountId })
-        });
-
-        if (!res.ok) {
-          const error = await res.json();
-          alert(error.error || "Failed to kick member.");
-          return;
-        }
-
-        alert("Member kicked.");
-        fetchMembers();
-        onMemberKicked();
-
-      } catch (err) {
-        console.error("Kick member error:", err);
-        alert("Server error during kick attempt.");
-      }
-    }
+  const handleKick = (member) => {
+      setMemberToKick(member);
   };
+  
+  const handleKickSuccess = () => {
+      setMemberToKick(null); 
+      fetchMembers(); 
+      onMemberKicked(); 
+  }
 
   if (loading) return (
     <div className="modal-overlay">
@@ -86,6 +69,18 @@ export default function MembersModal({ groupId, onClose, groupName, onMemberKick
       </div>
     </div>
   );
+  
+  if (memberToKick) {
+      return (
+          <KickConfirmationModal
+              groupId={groupId}
+              memberToKick={memberToKick}
+              groupName={groupName}
+              onClose={() => setMemberToKick(null)}
+              onKickSuccess={handleKickSuccess}
+          />
+      );
+  }
 
   return (
     <div className="modal-overlay">
@@ -103,10 +98,9 @@ export default function MembersModal({ groupId, onClose, groupName, onMemberKick
                 <li key={m.account_id}> 
                   <span>{m.member_email}</span>
                   
-                  {/* Show kick button only if the member is NOT the current user */}
                   {canKick && (
                       <button 
-                          onClick={() => handleKick(m.account_id, m.member_email)}
+                          onClick={() => handleKick(m)}
                           className="kick-button" 
                       >
                         Kick
