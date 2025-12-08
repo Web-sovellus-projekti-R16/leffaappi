@@ -8,10 +8,10 @@ services:
     healthCheckPath: /
     envVars:
       - key: VITE_API_URL
-        value: https://example.com
+        value: https://leffa-api.onrender.com
 
   - type: web
-    name: leffa-appi
+    name: leffa-api
     env: docker
     rootDir: api
     dockerfilePath: Dockerfile
