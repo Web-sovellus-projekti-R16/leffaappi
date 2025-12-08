@@ -24,4 +24,4 @@ services:
 
 databases:
   - name: leffa-db
-    plan: starter
+    plan: free
