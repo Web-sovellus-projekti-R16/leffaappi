@@ -12,7 +12,7 @@ export default function NowPlaying() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("http://localhost:3001/movies/nowplaying");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/movies/nowplaying`);
         const data = await res.json();
         setMovies(data)
         data.forEach(movie => loadRating(movie.tmdb_id))
