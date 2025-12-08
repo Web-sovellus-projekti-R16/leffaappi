@@ -2,8 +2,8 @@ services:
   - type: web
     name: leffa-frontend
     env: docker
-    rootDir: ./frontend
-    dockerfilePath: ./frontend/Dockerfile
+    rootDir: frontend
+    dockerfilePath: frontend/Dockerfile
     plan: starter
     healthCheckPath: /
     envVars:
@@ -13,8 +13,8 @@ services:
   - type: web
     name: leffa-appi
     env: docker
-    rootDir: ./api
-    dockerfilePath: ./api/Dockerfile
+    rootDir: api
+    dockerfilePath: api/Dockerfile
     plan: starter
     envVars:
       - key: DATABASE_URL
