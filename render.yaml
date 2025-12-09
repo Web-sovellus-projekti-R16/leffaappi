@@ -6,7 +6,7 @@ services:
     dockerfilePath: Dockerfile
     plan: starter
     buildCommand: npm run build
-    startCommand: npx serve -s dist
+    startCommand: nginx -g "daemon off;"
     envVars:
       - key: VITE_API_URL
         value: https://leffa-api.onrender.com

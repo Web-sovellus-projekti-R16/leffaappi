@@ -7,8 +7,24 @@ describe("API Functional Tests", () => {
 
     before(async () => {
         await initializeTestDb();
-        createdUserId = await insertTestUser(testUser);
     });
+
+    it("should register a user successfully", async () => {
+        const registerUser = { email: "user3@test.com", password: "Secret123" };
+        const response = await fetch("http://localhost:3001/account/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(registerUser)
+        });
+
+        createdUserId = await insertTestUser(registerUser);
+
+        expect(response.status).to.equal(201);
+
+        const body = await response.json()
+        const msg = body.message
+        expect(msg).to.equal("Account created successfully")
+    })
 
     it("should login successfully and return token", async () => {
         const response = await fetch("http://localhost:3001/account/login", {
@@ -24,6 +40,17 @@ describe("API Functional Tests", () => {
         expect(body).to.have.property("token");
         expect(body.token).to.be.a("string");
     });
+
+    it("should not login with invalid credentials", async () => {
+        const invalidUser = { email: "user@test.com", password: "pass123" }
+        const response = await fetch("http://localhost:3001/account/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(invalidUser)
+        });
+
+        expect(response.status).to.equal(401);
+    })
 
     it("should access protected route using Bearer token", async () => {
         const loginRes = await fetch("http://localhost:3001/account/login", {
