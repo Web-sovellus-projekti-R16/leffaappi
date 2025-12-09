@@ -3,3 +3,4 @@ frontend/node_modules
 .env
 frontend/.env
 sqldump.sql
+api/.env.test
