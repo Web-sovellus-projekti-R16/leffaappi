@@ -18,6 +18,8 @@ services:
     container_name: leffa-api
     env_file:
       - ./.env
+    environment:
+      - NODE_ENV: production
     ports:
       - "${API_PORT}:3001"
     depends_on:
@@ -28,6 +30,8 @@ services:
     container_name: leffa-frontend
     env_file:
       - ./.env
+    environment:
+      - NODE_ENV: production
     ports:
       - "${FRONTEND_PORT}:5173"
     depends_on:
