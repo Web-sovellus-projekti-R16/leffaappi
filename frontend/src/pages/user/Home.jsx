@@ -5,9 +5,17 @@ import "./Home.css"
 
 export default function Home() {
 
+  const token = localStorage.getItem("token");
+  const payload = token ? JSON.parse(atob(token.split(".")[1])) : null;
+  const email = payload?.email;
+
+  const username = email ? email.split("@")[0] : "user";
+
+
+
   return (
     <div className="home-container">
-      <h1 className="home-title">Welcome, user</h1>
+      <h1 className="home-title">Welcome, {username}</h1>
 
       <div className="home-links">
         <Link to="/groups">My Groups</Link>

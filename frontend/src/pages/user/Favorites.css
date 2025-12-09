@@ -66,3 +66,42 @@
   font-size: 16px;
   font-weight: 600;
 }
+
+.share-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* BUTTON STYLE */
+.share-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.share-btn:hover {
+  background: #f2f2f2;
+}
+
+/* INLINE LINK */
+.share-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+.share-inline-input {
+  padding: 4px 6px;
+  font-size: 13px;
+  width: 230px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+}

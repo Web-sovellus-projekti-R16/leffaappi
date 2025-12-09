@@ -11,6 +11,8 @@ export default function Favorites() {
   const [reviews, setReviews] = useState([])
   const [favorites, setFavorites] = useState([]);
   const [ratings, setRatings] = useState({})
+  const [shareUrl, setShareUrl] = useState("");
+
 
   async function loadFavorites() {
     if (!isSignedIn) return;
@@ -114,6 +116,32 @@ export default function Favorites() {
     }
   }
 
+  async function createShareLink() {
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/share`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        console.error("Failed to create share link");
+        return;
+      }
+
+      const data = await res.json();
+
+      const fullUrl = `${window.location.origin}/share/favorites/${data.shareId}`;
+      setShareUrl(fullUrl);
+    } catch (err) {
+      console.error("Error creating share link:", err);
+    }
+  }
+
   async function loadRating(tmdb_id) {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews/movie/tmdb/${tmdb_id}`)
     if (!res.ok) return
@@ -146,7 +174,14 @@ export default function Favorites() {
 
   return (
     <div className="favorites-container">
-      
+      <div className="share-row">
+        <button className="share-btn" onClick={createShareLink}>Share Favorite list</button>
+
+        {shareUrl && (<div className="share-inline"><span>link:</span>
+            <input type="text" value={shareUrl} readOnly className="share-inline-input" />
+          </div>
+        )}
+      </div>
       <h2 className="favorites-title">My Favorites</h2>
 
       <input
