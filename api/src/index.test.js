@@ -3,27 +3,52 @@ import { initializeTestDb, insertTestUser } from "./helpers/test.js"
 
 describe("API Functional Tests", () => {
     const testUser = { email: "user@test.com", password: "Secret123" };
-    let createdUserId = null;
 
     before(async () => {
         await initializeTestDb();
+        await insertTestUser(testUser)
     });
 
     it("should register a user successfully", async () => {
-        const registerUser = { email: "user3@test.com", password: "Secret123" };
+        const registerUser = { email: "user4@test.com", password: "Secret123" };
         const response = await fetch("http://localhost:3001/account/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(registerUser)
         });
 
-        createdUserId = await insertTestUser(registerUser);
-
         expect(response.status).to.equal(201);
 
         const body = await response.json()
-        const msg = body.message
-        expect(msg).to.equal("Account created successfully")
+        expect(body.message).to.equal("Account created successfully")
+    })
+
+    it ("should not register user if email is missing", async () => {
+        const invalidUser = { password: "Secret123" }
+        const response = await fetch("http://localhost:3001/account/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(invalidUser)
+        })
+
+        expect(response.status).to.equal(400)
+
+        const body = await response.json()
+        expect(body.error).to.equal("Email and password is required")
+    })
+
+    it ("should not register user if password is missing", async () => {
+        const invalidUser = { email: "nopass@test.com" }
+        const response = await fetch("http://localhost:3001/account/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(invalidUser)
+        })
+
+        expect(response.status).to.equal(400)
+
+        const body = await response.json()
+        expect(body.error).to.equal("Email and password is required")
     })
 
     it("should login successfully and return token", async () => {

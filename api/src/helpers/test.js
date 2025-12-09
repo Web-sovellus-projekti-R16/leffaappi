@@ -31,7 +31,7 @@ export const insertTestUser = (user) => {
                 console.error('Error hashing password:', err)
                 return reject(err)
             }
-            pool.query('insert into account (email, password_hash) values ($1, $2)',
+            pool.query('insert into account (email, password_hash) values ($1, $2) returning account_id, email',
                 [user.email, hashedPassword],
                 (err, result) => {
                     if (err) {
