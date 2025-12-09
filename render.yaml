@@ -10,6 +10,9 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://leffa-api.onrender.com
+    buildArgs:
+      - key: VITE_API_URL
+        value: https://leffa-api.onrender.com
 
   - type: web
     name: leffa-api
