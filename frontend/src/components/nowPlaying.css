@@ -1,9 +1,8 @@
 section {
-  max-height: 100px;
-    padding: 1.6rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: end;
+  padding: 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
 }
 
 h2 {
