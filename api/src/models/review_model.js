@@ -24,9 +24,9 @@ export const deleteReview = async (reviewId, accountId) => {
 export const getReviewsByMovie = async (tmdb_id) => {
   return await pool.query(
     `SELECT r.*, a.email
-     FROM review r
-     JOIN account a ON r.account_id = a.account_id
-     JOIN movie m ON r.movie_id = m.movie_id
+     FROM movie m
+     LEFT JOIN review r ON m.movie_id = r.movie_id
+     LEFT JOIN account a ON r.account_id = a.account_id
      WHERE m.tmdb_id = $1
      ORDER BY r.created_at DESC`,
     [tmdb_id]
