@@ -11,22 +11,18 @@ export default function Home() {
 
   const username = email ? email.split("@")[0] : "user";
 
-
-
   return (
-    <div className="home-container">
+  <div className="home-container">
+    <div className="home-top">
       <h1 className="home-title">Welcome, {username}</h1>
 
-      <div className="home-links">
-        <Link to="/groups">My Groups</Link>
-        <Link to="/favorites">My Favorites</Link>
-        <Link to="/account">Profile Settings</Link>
-      </div>
-
-      <div className="home-explorer-wrapper">
-        <MovieExplorer />
-        <NowPlaying />
-      </div>
     </div>
-  )
+
+    <div className="home-explorer-wrapper">
+      <MovieExplorer />
+      <NowPlaying />
+    </div>
+
+  </div>
+)
 }
