@@ -108,8 +108,19 @@ export const refreshAccessToken = (req, res) => {
 }
 
 export const logoutAccount = (req, res) => {
-    res.clearCookie("refreshToken")
-    return res.json({ message: "Logout succesful" })
+    const token = req.cookies?.refreshToken
+
+    if (!token) {
+        return res.status(401).json({ error: "Not authenticated" })
+    }    
+    
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/"
+    })
+    return res.status(200).json({ message: "Logout succesful" })
 }
 
 export const changePassword = async (req, res) => {
