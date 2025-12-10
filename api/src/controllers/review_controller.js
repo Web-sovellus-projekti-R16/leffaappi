@@ -88,18 +88,21 @@ export const movieReviews = async (req, res) => {
   try {
     const tmdb_id = req.params.tmdb_id;
     const result = await getReviewsByMovie(tmdb_id)
-    res.json(result.rows)
+    return res.status(200).json(result.rows)
   } catch (err) {
     console.error("movieReviews error:", err)
-    res.status(500).json({ error: "Server error" })
+    return res.status(500).json({ error: "Server error" })
   }
 }
 
 export const userReviews = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" })
+    }
     const accountId = req.user.id
     const result = await getUserReviews(accountId)
-    res.json(result.rows)
+    return res.status(200).json(result.rows)
   } catch (err) {
     console.error("userReviews error:", err)
     res.status(500).json({ error: "Server error" })
