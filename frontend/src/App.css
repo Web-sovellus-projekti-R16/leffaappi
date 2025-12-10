@@ -103,3 +103,14 @@ select:focus {
     color: #444;
     font-style: italic;
 }
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+

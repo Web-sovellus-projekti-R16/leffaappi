@@ -16,40 +16,40 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import ConfirmDelete from "./pages/ConfirmDelete";
 import MoviePage from "./pages/MoviePage";
 import ShareFavs from "./pages/ShareFavs.jsx";
-
-
-
+import Footer from "./components/Footer";
 
 function App() {
 
   //const [loggedin, setLoggedIn] = useState(!!localStorage.getItem("token"))
 
   return (
-    <>
+    <div className="app-shell">
       <Navig />
 
-      <Routes>
-        <Route path="/movie/:id" element={<MoviePage />} />
-        <Route path="/share/favorites/:id" element={<ShareFavs />} />
+      <main className="app-main">
+        <Routes>
+          <Route path="/movie/:id" element={<MoviePage />} />
+          <Route path="/share/favorites/:id" element={<ShareFavs />} />
 
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
-        <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
-        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
-        <Route path="/confirm-delete" element={<ProtectedRoute><ConfirmDelete /></ProtectedRoute>} />
+          <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
+          <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
+          <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+          <Route path="/confirm-delete" element={<ProtectedRoute><ConfirmDelete /></ProtectedRoute>} />
 
-        <Route path="/search" element={<Search />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/movies" element={<MovieExplorer />} />
-        <Route path="/nowplaying" element={<NowPlaying />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/movies" element={<MovieExplorer />} />
+          <Route path="/nowplaying" element={<NowPlaying />} />
 
-        <Route path="/" element={<Mainpage />} />
+          <Route path="/" element={<Mainpage />} />
+        </Routes>
+      </main>
 
-      </Routes>
-    </>
+      <Footer />
+    </div>
   )
-
 }
 
 export default App
