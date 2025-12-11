@@ -87,3 +87,64 @@
   font-size: 0.9rem;
   cursor: pointer;
 }
+
+@media (max-width: 600px) {
+  .groups-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .groups-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .groups-create-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .groups-search-wrapper {
+    justify-content: stretch;
+  }
+
+  .groups-search {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .groups-select-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .groups-select,
+  .groups-send-btn {
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  .groups-box {
+    padding: 0.75rem;
+  }
+
+  .groups-list-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
+
+  .groups-leave-btn,
+  .groups-manage-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+}

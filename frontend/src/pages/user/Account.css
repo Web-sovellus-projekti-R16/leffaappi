@@ -1,9 +1,8 @@
 .account-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 400px;
   text-align: center;
   padding: 2rem;
+  margin: 0 auto;
 }
 
 .account-back {
@@ -36,24 +35,25 @@
   font-size: 2rem;
 }
 
-.account-delete-btn {
+.secondary-btn {
+  width: 90%;
   margin-top: 2rem;
-  background-color: #f55;
+  background-color: #1b242e;
   color: white;
-  border: none;
   padding: 0.75rem 1.5rem;
   cursor: pointer;
-  border-radius: 4px;
+  border: #f55 solid 2px;
+  border-radius: 1.5rem;
+  font-size: 1rem;
 }
 
-.account-delete-btn:hover {
-  background-color: #d44;
+.secondary-btn:hover {
+  background-color: #444;
 }
 
 .password-section {
   margin-top: 30px;
   padding: 20px;
-  max-width: 200px;
 }
 
 .password-form {

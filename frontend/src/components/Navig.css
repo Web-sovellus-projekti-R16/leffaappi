@@ -3,6 +3,7 @@
   align-items: center;
   gap: 1rem;
   padding: 4rem 3rem 1rem 3rem;
+  flex-wrap: wrap;
 }
 
 .navlink {
@@ -18,4 +19,16 @@
 
 .account {
   margin-left: auto;
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 1rem 1.5rem;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .account {
+    margin-left: 0;
+  }
 }

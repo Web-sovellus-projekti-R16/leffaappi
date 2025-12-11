@@ -172,7 +172,6 @@ export default function Groups() {
 
   return (
     <div className="groups-container">
-      <Link to="/home" className="groups-back">Back to Home</Link>
       
       <div className="groups-header">
         <h2>Groups</h2>

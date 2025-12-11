@@ -125,16 +125,14 @@ export default function Account() {
 
   return (
     <div className="account-container">
-      <Link to="/home" className="account-back">Back to Home</Link>
-
-      <div className="account-top-section">
+      {/* <div className="account-top-section">
         <div className="account-profile-row">
           <div className="account-avatar">
             👤
           </div>
           <span>Edit profile picture</span>
         </div>
-      </div>
+      </div> */}
 
       <div className="password-section">
         <h3>Change Password</h3>
@@ -164,7 +162,7 @@ export default function Account() {
         )}
       </div>
 
-      <button className="account-delete-btn" onClick={goToConfirmDelete}>
+      <button className="secondary-btn" onClick={goToConfirmDelete}>
         Delete Account
       </button>
     </div>

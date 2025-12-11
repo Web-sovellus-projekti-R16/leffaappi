@@ -15,6 +15,4 @@ router.post("/favorite", authMiddleware, setFavorite)
 router.post("/share", authMiddleware, createShareList)
 router.get("/share/:id", getSharedList)
 
-
-
 export default router
