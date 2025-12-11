@@ -10,7 +10,7 @@ import groupRouter from "./routers/group_router.js";
 import "./jobs/accountCleanupJob.js";
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 app.use(cors({
   origin: process.env.REACT_URL,
