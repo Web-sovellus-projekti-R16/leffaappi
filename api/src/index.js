@@ -12,13 +12,8 @@ import "./jobs/accountCleanupJob.js";
 const app = express();
 const port = process.env.PORT;
 
-const allowedOrigins = [
-  "https://leffa-frontend.onrender.com",
-  "http://localhost:5173"
-];
-
 app.use(cors({
-  origin: allowedOrigins,
+  origin: process.env.REACT_URL,
   credentials: true
 }));
 
