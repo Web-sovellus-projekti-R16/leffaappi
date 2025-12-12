@@ -72,7 +72,7 @@ export const loginAccount = async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "None",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
@@ -190,9 +190,17 @@ export const deleteAccount = async (req, res) => {
 export const getProfile = async (req, res) => {
     try {
         const { id, email } = req.user
+
+        const result = await findAccountByEmail(email)
+        const account = result.rows[0]
+
         res.json({
             message: "Profile retrieved",
-            user: { id, email }
+            user: { 
+                id: account.account_id, 
+                email: account.email,
+                profile_image_url: account.profile_image_url || null
+            }
         })
     } catch (err) {
         res.status(500).json({ error: "Server error" })
