@@ -1,4 +1,5 @@
 import express from 'express'
+import multer from 'multer'
 import { createAccount, 
         loginAccount, 
         logoutAccount, 
@@ -6,9 +7,11 @@ import { createAccount,
         deleteAccount,
         getProfile,
         changePassword,
-        restoreAccount } from '../controllers/account_controller.js'
+        restoreAccount,
+        uploadProfileImage } from '../controllers/account_controller.js'
 import { authMiddleware } from '../middleware/authMiddleware.js'
 
+const upload = multer({ storage: multer.memoryStorage() })
 const router = express.Router()
 
 router.post("/register", createAccount)
@@ -17,6 +20,7 @@ router.post("/logout", logoutAccount)
 router.post("/refresh", refreshAccessToken)
 
 router.get("/profile", authMiddleware, getProfile)
+router.post("/profile-image", authMiddleware, upload.single("image"), uploadProfileImage)
 router.put("/password", authMiddleware, changePassword)
 router.put("/delete", authMiddleware, deleteAccount)
 
