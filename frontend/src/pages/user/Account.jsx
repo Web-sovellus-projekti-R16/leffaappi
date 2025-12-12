@@ -5,7 +5,9 @@ import "./Account.css"
 export default function Account() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState(null)
-
+  const [uploadedImage, setUploadedImage] = useState(null)
+  const [uploadMessage, setUploadMessage] = useState(null)
+  const [previewUrl, setPreviewUrl] = useState(null)
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -44,7 +46,7 @@ export default function Account() {
   }, [navigate])
 
   const goToConfirmDelete = () => {
-  navigate("/confirm-delete");
+    navigate("/confirm-delete");
   };
 
   const handleChangePassword = async (e) => {
@@ -88,6 +90,7 @@ export default function Account() {
       setPasswordMessage("Server error occured while changing password")
     }
   }
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete your account. It will be permanently deleted after 14 days."
@@ -123,14 +126,91 @@ export default function Account() {
     }
   }
 
+  const handleImageSelect = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setUploadedImage(file)
+    setPreviewUrl(URL.createObjectURL(file))
+  }
+
+  const handleUploadImage = async () => {
+    if (!uploadedImage) {
+      setUploadMessage("No image selected")
+      return
+    }
+
+    try {
+      const token = localStorage.getItem("token")
+      const formData = new FormData()
+      formData.append("image", uploadedImage)
+
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/account/profile-image`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include",
+        body: formData
+      })
+
+      const data = await result.json()
+
+      if (!result.ok) {
+        setUploadMessage(data.error || "Upload failed")
+        return
+      }
+
+      setUploadMessage("Profile picture updated!")
+      setPreviewUrl(data.imageUrl)
+
+      setProfile((prev) => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          profile_image_url: data.imageUrl
+        }
+      }))
+    } catch (err) {
+      console.error("Image upload error:", err)
+      setUploadMessage("Server error. Please try again later")
+    }
+  }
+
   return (
     <div className="account-container">
-      {/* <div className="account-top-section">
+
+      <div className="account-top-section">
         <div className="account-profile-row">
           <div className="account-avatar">
-            👤
+            {previewUrl || profile?.user?.profile_image_url ? (
+              <img src={previewUrl || profile.user.profile_image_url}
+                alt="Profile picture"
+                className="account-avatar-img" />) : (
+              <span className="avatar-placeholder">👤</span>
+            )}
           </div>
-          <span>Edit profile picture</span>
+
+          <div className="profile-image-upload">
+            <input type="file"
+              accept="image/*"
+              id="uploadInput"
+              style={{ display: "none" }}
+              onChange={handleImageSelect}/>
+            
+            <button className="primary-btn"
+              onClick={() => document.getElementById("uploadInput").click()}>
+              Choose picture
+            </button>
+            
+            {uploadedImage && (
+              <button className="primary-btn" onClick={handleUploadImage} style={{ marginLeft: "1rem" }}>
+                Upload
+              </button>
+            )}
+          </div>
+          
+          {uploadMessage && <p>{uploadMessage}</p>}
         </div>
       </div> */}
 
