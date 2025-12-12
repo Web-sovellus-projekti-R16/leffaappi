@@ -56,3 +56,10 @@ export const restoreAccount = async (accountId) => {
         WHERE account_id = $1 AND is_deleted = TRUE
         RETURNING account_id, email, password_hash`, [accountId])
 }
+
+export const insertImage = async (accountId, imgUrl) => {
+    return await pool.query(`
+        UPDATE account
+        SET profile_image_url = $2
+        WHERE account_id = $1`, [accountId, imgUrl])
+}

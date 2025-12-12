@@ -1,12 +1,14 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { uploadToR2 } from '../helpers/r2Service.js'
 import { insertAccount, 
         findAccountByEmail,
         updatePassword,
         findDeletedAccount,
         softDeleteAccount,
         permanentlyDeleteExpiredAccounts,
-        restoreAccount as restoreAccountModel } from '../models/account_model.js'
+        restoreAccount as restoreAccountModelm,
+    insertImage } from '../models/account_model.js'
 
 export const createAccount = async (req, res) => {
     try {
@@ -250,6 +252,33 @@ export const restoreAccount = async (req, res) => {
         })
     } catch (err) {
         console.error("Account restore error:", err)
+        res.status(500).json({ error: "Server error" })
+    }
+}
+
+export const uploadProfileImage = async (req, res) => {
+    try {
+        const accountId = req.user.id
+
+        if (!req.file) {
+            return res.status(400).json({ error: "No image uploaded" })
+        }
+
+        const file = req.file
+        const timestamp = Date.now()
+        const ext = file.originalname.split('.').pop()
+        const fileName = `profile-${accountId}-${timestamp}.${ext}`
+
+        const cfBucketUrl = await uploadToR2(file.buffer, fileName, file.mimetype)
+
+        await insertImage(accountId, cfBucketUrl)
+
+        return res.status(201).json({
+            message: "Profile image uploaded successfully",
+            imageUrl: cfBucketUrl
+        })
+    } catch (err) {
+        console.error("Profile image upload error:", err)
         res.status(500).json({ error: "Server error" })
     }
 }
