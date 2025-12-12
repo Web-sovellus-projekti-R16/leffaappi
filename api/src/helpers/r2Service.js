@@ -1,4 +1,5 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 const client = new S3Client({
     region: "auto",
@@ -14,11 +15,15 @@ export const uploadToR2 = async (fileBuffer, fileName, contentType) => {
         Bucket: process.env.R2_BUCKET,
         Key: fileName,
         Body: fileBuffer,
-        ContentType: contentType,
-        ACL: "public-read"
+        ContentType: contentType
     })
 
     await client.send(command)
 
-    return `${process.env.R2_PUBLIC_DOMAIN}/${fileName}`
+    const signedUrl = await getSignedUrl(client, new GetObjectCommand({
+        Bucket: process.env.R2_BUCKET,
+        Key: fileName
+    }), { expiresIn: 3600 })
+
+    return signedUrl
 }

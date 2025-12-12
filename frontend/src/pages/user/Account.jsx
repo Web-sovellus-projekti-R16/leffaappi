@@ -161,8 +161,8 @@ export default function Account() {
         return
       }
 
-      setUploadMessage("Profile picture updated!")
       setPreviewUrl(data.imageUrl)
+      setUploadMessage("Profile picture updated!")
 
       setProfile((prev) => ({
         ...prev,
@@ -212,7 +212,7 @@ export default function Account() {
           
           {uploadMessage && <p>{uploadMessage}</p>}
         </div>
-      </div> */}
+      </div>
 
       <div className="password-section">
         <h3>Change Password</h3>
