@@ -34,8 +34,8 @@
 }
 
 .account-avatar {
-  width: 90px;
-  height: 90px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   overflow: hidden;
   background: #ccc;
