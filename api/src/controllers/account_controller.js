@@ -292,13 +292,18 @@ export const uploadProfileImage = async (req, res) => {
 }
 
 export const deleteProfileImage = async (req, res) => {
-    const accountId = req.user.id
+    try {
+        const accountId = req.user.id
 
-    const imageKey = await deleteImage(accountId)
+        const imageKey = await deleteImage(accountId)
 
-    if (imageKey) {
-        await deleteFromR2(imageKey)
+        if (imageKey) {
+            await deleteFromR2(imageKey)
+        }
+
+        res.status(201).json({ message: "Profile image deleted" })
+    } catch (err) {
+        console.error("Delete profile image error:", err)
+        res.status(500).json({ error: "Server error" })
     }
-
-    res.status(201).json({ message: "Profile image deleted" })
 }
