@@ -196,8 +196,13 @@ export const getProfile = async (req, res) => {
         const account = result.rows[0]
 
         let signedUrl = null
-        if (account.profile_image_key) {
-            signedUrl = await getSignedUrlFromKey(account.profile_image_key)
+        try {
+            if (account.profile_image_key) {
+                signedUrl = await getSignedUrlFromKey(account.profile_image_key)
+            }
+        } catch (err) {
+            console.error("R2 signed URL error:", err)
+            signedUrl = null
         }
 
         res.json({
