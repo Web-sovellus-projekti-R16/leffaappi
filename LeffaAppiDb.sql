@@ -55,3 +55,10 @@ create table account_group_request (
     FOREIGN KEY (group_id) REFERENCES "group"(group_id) ON DELETE CASCADE,
     unique (account_id, group_id)
 );
+
+CREATE TABLE group_movie (
+    group_id INTEGER NOT NULL REFERENCES "group"(group_id) ON DELETE CASCADE,
+    movie_id INTEGER NOT NULL, 
+    added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (group_id, movie_id) 
+);
