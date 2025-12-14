@@ -9,6 +9,7 @@ import { insertAccount,
         permanentlyDeleteExpiredAccounts,
         restoreAccount as restoreAccountModelm,
     insertImage, deleteImage } from '../models/account_model.js'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 export const createAccount = async (req, res) => {
     try {
@@ -189,20 +190,26 @@ export const deleteAccount = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     try {
-        const { id, email } = req.user
+        const { email } = req.user
 
         const result = await findAccountByEmail(email)
         const account = result.rows[0]
+
+        let signedUrl = null
+        if (account.profile_image_key) {
+            signedUrl = await getSignedUrlFromKey(account.profile_image_key)
+        }
 
         res.json({
             message: "Profile retrieved",
             user: { 
                 id: account.account_id, 
                 email: account.email,
-                profile_image_url: account.profile_image_url || null
+                profile_image_url: signedUrl
             }
         })
     } catch (err) {
+        console.error("Profile fetch error:", err)
         res.status(500).json({ error: "Server error" })
     }
 }

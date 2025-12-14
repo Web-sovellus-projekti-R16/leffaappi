@@ -11,7 +11,9 @@ import {
   denyJoinRequestController,
   getJoinRequestsByGroupController,
   getGroupMembersController,
-  kickGroupMemberController
+  kickGroupMemberController,
+  handleAddMovieToGroupController,
+  handleGetGroupMoviesController
 } from "../controllers/group_controller.js";
 
 const router = express.Router();
@@ -30,5 +32,8 @@ router.get("/join/requests/:groupId", authMiddleware, getJoinRequestsByGroupCont
 
 router.get("/members/:groupId", authMiddleware, getGroupMembersController); 
 router.post("/kick", authMiddleware, kickGroupMemberController); 
+
+router.post("/movie/add", authMiddleware, handleAddMovieToGroupController);
+router.get("/movies/:groupId", authMiddleware, handleGetGroupMoviesController);
 
 export default router;
