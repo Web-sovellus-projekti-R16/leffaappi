@@ -9,9 +9,12 @@ import {
   getGroupById,
   kickGroupMember,
   getGroupMembers,
-  addMemberToGroup 
+  addMemberToGroup,
+  addMovieToGroup,
+  getMoviesByGroupId
 } from "../models/group_model.js";
 
+import { searchMovieByTmdbId } from "../helpers/tmdbService.js";
 
 const validateGroupId = (groupId) => {
     const id = Number(groupId);
@@ -217,4 +220,86 @@ export const kickGroupMemberController = async (req, res) => {
     }
     return res.status(500).json({ error: "Failed to kick member." });
   }
+};
+
+
+export const handleAddMovieToGroupController = async (req, res) => {
+    try {
+        const { groupId, movieId } = req.body;
+        const accountId = req.user.id;
+
+        if (!groupId || !movieId) {
+            return res.status(400).json({ error: "Group ID and Movie ID are required." });
+        }
+        
+        const validatedGroupId = validateGroupId(groupId);
+        const validatedMovieId = Number(movieId);
+
+        if (!validatedGroupId || isNaN(validatedMovieId) || validatedMovieId <= 0) {
+            return res.status(400).json({ error: "Invalid Group ID or Movie ID format." });
+        }
+        
+        const membersResult = await getGroupMembers(validatedGroupId);
+        const isMember = membersResult.rows.some(m => m.account_id === accountId);
+        
+        if (!isMember) {
+            return res.status(403).json({ error: "Forbidden. Only group members can add movies." });
+        }
+
+        const result = await addMovieToGroup(validatedGroupId, validatedMovieId);
+        
+        if (result.rowCount === 0) {
+            return res.status(409).json({ error: "Movie is already in this group." });
+        }
+
+        return res.status(201).json({ message: "Movie added to group successfully." });
+
+    } catch (err) {
+        console.error("Add movie to group error:", err);
+        return res.status(500).json({ error: "Failed to add movie to group. Check server logs." });
+    }
+};
+
+export const handleGetGroupMoviesController = async (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const validatedGroupId = validateGroupId(groupId);
+        const accountId = req.user.id; 
+
+        if (!validatedGroupId) {
+            return res.status(400).json({ error: "Invalid Group ID provided." });
+        }
+
+        const membersResult = await getGroupMembers(validatedGroupId);
+        const isMember = membersResult.rows.some(m => m.account_id === accountId);
+
+        if (!isMember) {
+            return res.status(403).json({ error: "Forbidden. You must be a member to view the movie list." });
+        }
+
+        const dbResult = await getMoviesByGroupId(validatedGroupId);
+        const movieIds = dbResult.rows;
+
+        const movieDetailsPromises = movieIds.map(async (movieEntry) => {
+            const details = await searchMovieByTmdbId(movieEntry.movie_id);
+            
+            if (!details) return null;
+
+            return {
+                tmdb_id: details.id,
+                title: details.title,
+                release_date: details.release_date,
+                poster_path: details.poster_path ? `https://image.tmdb.org/t/p/w500${details.poster_path}` : null,
+                added_at: movieEntry.added_at
+            };
+        });
+
+        const moviesWithDetails = (await Promise.all(movieDetailsPromises)).filter(m => m !== null);
+
+        return res.status(200).json({ movies: moviesWithDetails });
+
+    } catch (err) {
+        console.error("Get group movies error:", err);
+        return res.status(500).json({ error: "Failed to fetch movie list. Check server logs." });
+    }
 };
