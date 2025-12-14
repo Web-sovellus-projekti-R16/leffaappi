@@ -57,9 +57,30 @@ export const restoreAccount = async (accountId) => {
         RETURNING account_id, email, password_hash`, [accountId])
 }
 
-export const insertImage = async (accountId, imgUrl) => {
+export const insertImage = async (accountId, imageKey) => {
     return await pool.query(`
         UPDATE account
-        SET profile_image_url = $2
-        WHERE account_id = $1`, [accountId, imgUrl])
+        SET profile_image_key = $2
+        WHERE account_id = $1`, [accountId, imageKey])
+}
+
+export const deleteImage = async (accountId) => {
+    const result = await pool.query(`
+        UPDATE account
+        SET profile_image_key = NULL
+        WHERE account_id = $1
+        RETURNING profile_image_key
+        `, [accountId])
+
+    return result.rows[0]?.profile_image_key
+}
+
+export const getExpiredAccountsImages = async () => {
+    const query = `
+        SELECT account_id, profile_image_key
+        FROM account
+        WHERE account_removed IS NOT NULL
+            AND account_removed < NOW() - INTERVAL '14 days'`
+
+    return await pool.query(query)
 }

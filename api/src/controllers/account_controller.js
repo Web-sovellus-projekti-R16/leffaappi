@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { uploadToR2 } from '../helpers/r2Service.js'
+import { uploadToR2, deleteFromR2 } from '../helpers/r2Service.js'
 import { insertAccount, 
         findAccountByEmail,
         updatePassword,
@@ -8,7 +8,7 @@ import { insertAccount,
         softDeleteAccount,
         permanentlyDeleteExpiredAccounts,
         restoreAccount as restoreAccountModelm,
-    insertImage } from '../models/account_model.js'
+    insertImage, deleteImage } from '../models/account_model.js'
 
 export const createAccount = async (req, res) => {
     try {
@@ -277,16 +277,28 @@ export const uploadProfileImage = async (req, res) => {
         const ext = file.originalname.split('.').pop()
         const fileName = `profile-${accountId}-${timestamp}.${ext}`
 
-        const cfBucketUrl = await uploadToR2(file.buffer, fileName, file.mimetype)
+        const { key, signedUrl } = await uploadToR2(file.buffer, fileName, file.mimetype)
 
-        await insertImage(accountId, cfBucketUrl)
+        await insertImage(accountId, key)
 
         return res.status(201).json({
             message: "Profile image uploaded successfully",
-            imageUrl: cfBucketUrl
+            imageUrl: signedUrl
         })
     } catch (err) {
         console.error("Profile image upload error:", err)
         res.status(500).json({ error: "Server error" })
     }
+}
+
+export const deleteProfileImage = async (req, res) => {
+    const accountId = req.user.id
+
+    const imageKey = await deleteImage(accountId)
+
+    if (imageKey) {
+        await deleteFromR2(imageKey)
+    }
+
+    res.status(201).json({ message: "Profile image deleted" })
 }
