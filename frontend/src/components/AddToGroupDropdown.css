@@ -1,0 +1,71 @@
+.add-to-group-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.add-to-group-btn {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-to-group-btn:hover:not(:disabled) {
+  background-color: #1e7e34;
+}
+
+.add-to-group-btn:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+.add-to-group-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  list-style: none;
+  padding: 5px 0;
+  margin: 6px 0 0 0;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.95em;
+  cursor: pointer;
+  color: #333;
+}
+
+.menu-item-btn:hover {
+  background-color: #f0f8ff;
+  color: #007bff;
+}
+
+.menu-item-btn:focus-visible {
+  outline: 2px solid #007bff;
+}
+
+.menu-error {
+  padding: 10px 15px;
+  color: #dc3545;
+  font-size: 0.9em;
+}
+
+.add-to-group-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
