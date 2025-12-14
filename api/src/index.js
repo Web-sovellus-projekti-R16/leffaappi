@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-import reviewRouter from "./routers/review_router.js"
 
+import reviewRouter from "./routers/review_router.js"
 import movieRouter from "./routers/movie_router.js";
 import accountRouter from "./routers/account_router.js";
 import groupRouter from "./routers/group_router.js";
@@ -24,10 +24,9 @@ app.use(cookieParser());
 app.use("/movies", movieRouter);
 app.use("/group", groupRouter);
 app.use("/account", accountRouter);
+app.use("/reviews", reviewRouter);
 
-app.use("/reviews", reviewRouter)
-
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
   res.send("Postgres API esimerkki");
 });
 
