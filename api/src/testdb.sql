@@ -26,3 +26,5 @@ CREATE TABLE review (
     FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 );
+
+TRUNCATE TABLE account RESTART IDENTITY CASCADE;

@@ -30,6 +30,13 @@ app.get("/", (req, res) => {
   res.send("Postgres API esimerkki");
 });
 
-app.listen(port, () => {
-  console.log(`Server is listening port ${port}`);
-});
+let server = null
+
+if (process.env.NODE_ENV !== "test") {
+  await import("./jobs/accountCleanupJob.js")
+  server = app.listen(port, () => {
+    console.log(`Server is listening port ${port}`);
+  });
+}
+
+export { app, server }
