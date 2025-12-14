@@ -1,44 +1,33 @@
 .movie-page {
     max-width: 900px;
     margin: 0 auto;
-    padding: 1rem;
-    box-sizing: border-box;
+    padding: 2rem;
 }
 
 .movie-header {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
     margin-bottom: 2rem;
 }
 
-.poster-wrapper {
-  align-items: center;
-  margin-right: 0;
-}
-
 .poster {
-    width: 180px;
-    max-width: 100%;
+    width: 260px;
     border-radius: 10px;
 }
 
 .info h1 {
-    font-size: 1.5rem;
-    line-height: 1.2;
+    margin-top: 0;
 }
 
 .overview {
     margin: 1rem 0;
-    line-height: 1.5;
+    line-height: 1.4;
     color: #444;
-    font-size: 0.95rem;
 }
 
 .meta {
-    font-size: 1rem;
-    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    margin-top: 1rem;
     font-weight: bold;
 }
 
@@ -106,15 +95,13 @@
   color: #666;
 }
 .review-box {
-  box-sizing: border-box;
   background: #f9f9f9;
   border: 1px solid #ddd;
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 16px;
   width: 100%;
-  max-width: 100%;
-  font-size: 0.95rem;
+  max-width: 480px;
 }
 
 .review-box p {
@@ -148,41 +135,17 @@
 .favorite-add-btn,
 .favorite-remove-btn {
   margin-top: 12px;
-  width: 100%;
-  max-width: 220px;
+  width: 150px;
   padding: 8px 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
 }
 
-@media (min-width: 768px) {
-  .movie-page {
-    padding: 2rem;
-  }
-
-  .movie-header {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 2rem;
-  }
-
-  .poster {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .info { flex: 1; }
-
-  .info h1 {
-    font-size: 2rem;
-  }
-
-  .favorite-add-btn {
-    width: 150px;
-  }
-
-  .review-box {
-    max-width: 480px;
-  }
+.movie-action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap; 
 }
+

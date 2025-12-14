@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom"
 import AvgRating from "../components/AvgRating"
 import Starss from "../components/Starss"
 import "./MoviePage.css"
+import AddToGroupDropdown from "../components/AddToGroupDropdown.jsx";
 
 export default function MoviePage() {
   const { id } = useParams()
@@ -34,7 +35,6 @@ export default function MoviePage() {
     async function load() {
       setLoading(true)
       try {
-        // Loading movie data
         const resMovie = await fetch(`${import.meta.env.VITE_API_URL}/movies/tmdb?tmdb_id=${id}`)
         if (!resMovie.ok) {
           return
@@ -57,7 +57,6 @@ export default function MoviePage() {
 
         setMovie(movieData)
 
-        // Loading review data
         loadReviews(movieData.tmdb_id)
       } catch (err) {
         console.error("Movie load error:", err)
@@ -136,8 +135,19 @@ export default function MoviePage() {
           {movie.poster_path && (
             <img className="poster" src={movie.poster_path} alt={movie.title} />
           )}
-          {token && (!isFavorite ? (<button className="favorite-add-btn" onClick={addFavorite}>Add to favorites</button>) :
-            (<button className="favorite-add-btn" disabled>Favorited</button>)
+          {token && (
+            <div className="movie-action-buttons">
+                {!isFavorite ? (
+                    <button className="favorite-add-btn" onClick={addFavorite}>Add to favorites</button>
+                ) : (
+                    <button className="favorite-add-btn" disabled>Favorited</button>
+                )}
+                
+                <AddToGroupDropdown 
+                    movieId={movie.tmdb_id}
+                    movieTitle={movie.title}
+                />
+            </div>
           )}
         </div>
 
