@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { uploadToR2, deleteFromR2 } from '../helpers/r2Service.js'
+import { uploadToR2, getSignedUrlFromKey, deleteFromR2 } from '../helpers/r2Service.js'
 import { insertAccount, 
         findAccountByEmail,
         updatePassword,
