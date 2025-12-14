@@ -1,16 +1,27 @@
 import { expect } from "chai"
 import { initializeTestDb, insertTestUser } from "./helpers/test.js"
+import { app } from "./index.js"
+
+let server
 
 describe("API Functional Tests", () => {
     const testUser = { email: "user@test.com", password: "Secret123" };
 
     before(async () => {
+        server = app.listen(3001)
+    })
+    
+    after(async () => {
+        await server.close()
+    })
+
+    beforeEach(async () => {
         await initializeTestDb();
         await insertTestUser(testUser)
     });
 
     it("should register a user successfully", async () => {
-        const registerUser = { email: "user4@test.com", password: "Secret123" };
+        const registerUser = { email: "use14@test.com", password: "Secret123" };
         const response = await fetch("http://localhost:3001/account/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
