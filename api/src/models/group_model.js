@@ -95,3 +95,23 @@ export const getJoinRequestsByGroup = async (groupId) => {
   return await pool.query(query, [groupId]);
 };
 
+export const addMovieToGroup = async (groupId, movieId) => {
+  const query = `
+    INSERT INTO group_movie (group_id, movie_id) 
+    VALUES ($1, $2)
+    -- Prevents insertion if the movie is already in the group
+    ON CONFLICT (group_id, movie_id) DO NOTHING 
+    RETURNING *;
+  `;
+  return await pool.query(query, [groupId, movieId]);
+};
+
+export const getMoviesByGroupId = async (groupId) => {
+  const query = `
+    SELECT movie_id, added_at
+    FROM group_movie
+    WHERE group_id = $1
+    ORDER BY added_at DESC;
+  `;
+  return await pool.query(query, [groupId]);
+};
