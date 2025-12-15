@@ -57,6 +57,7 @@
 }
 
 .secondary-btn {
+  width: 10%;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -143,6 +144,6 @@
   }
 
   .secondary-btn {
-    width: 100%;
+    width: 40%;
   }
 }
