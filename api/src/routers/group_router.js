@@ -4,7 +4,6 @@ import {
   createGroupController,
   getGroupsController,
   getGroupController,
-  joinGroupController,
   leaveGroupController,
   requestToJoinGroupController,
   approveJoinRequestController,
@@ -23,7 +22,7 @@ router.get("/:groupId", authMiddleware, getGroupController);
 
 router.post("/create", authMiddleware, createGroupController);
 router.post("/leave", authMiddleware, leaveGroupController);
-router.post("/join", authMiddleware, joinGroupController);
+
 
 router.post("/join/request", authMiddleware, requestToJoinGroupController);
 router.post("/join/approve", authMiddleware, approveJoinRequestController);
