@@ -32,7 +32,6 @@
 
 .favorites-poster {
   width: 110px;
-  height: auto;
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
@@ -47,7 +46,7 @@
 }
 
 .favorites-rate-box, .avg-rating-component {
-  flex-shrink: 0;
+  flex: 1;
   text-align: center;
 }
 
@@ -58,7 +57,6 @@
 }
 
 .secondary-btn {
-  width: 0%;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -87,7 +85,6 @@
 .share-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 12px;
   margin-bottom: 1.25rem;
 }
@@ -140,20 +137,12 @@
     margin: 0 auto;
   }
 
-  .favorites-info {
-    text-align: center;
-  }
-
   .favorites-rate-box,
   .avg-rating-component {
     margin: 0.5rem auto;
   }
 
   .secondary-btn {
-    margin-top: 0.5rem;
-  }
-
-  .favorites-search {
     width: 100%;
   }
 }
