@@ -24,10 +24,15 @@ export default function GroupPage() {
     useEffect(() => {
         if (!groupId) return;
 
+        const controller = new AbortController();
+        const { signal } = controller;
+
         setLoading(true);
         setError(null);
+
         const authHeaders = getAuthHeaders();
         if (!authHeaders) {
+            controller.abort();
             setError("Authentication failed.");
             setLoading(false);
             return;
@@ -35,56 +40,59 @@ export default function GroupPage() {
 
         const fetchDetails = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/group/${groupId}`, {
-                    method: "GET",
-                    headers: authHeaders,
-                });
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/group/${groupId}`,
+                    { headers: authHeaders, signal }
+                );
 
                 const data = await res.json();
+
                 if (!res.ok) {
                     throw new Error(data.error || "Failed to fetch group details.");
                 }
 
                 return data.group;
             } catch (err) {
-                console.error("Group detail fetch error:", err);
-                throw new Error("Group details network error.");
+                if (err.name === "AbortError") return null;
+                throw err;
             }
         };
 
         const fetchMovies = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/group/movies/${groupId}`, {
-                    method: "GET",
-                    headers: authHeaders,
-                });
+                const res = await fetch(
+                    `${import.meta.env.VITE_API_URL}/group/movies/${groupId}`,
+                    { headers: authHeaders, signal }
+                );
 
                 const data = await res.json();
-                if (!res.ok) {
-                    console.error("Failed to fetch group movies:", data.error);
-                    return [];
-                }
-
-                return data.movies;
+                return res.ok ? data.movies : [];
             } catch (err) {
-                console.error("Group movies network error:", err);
-                return [];
+                if (err.name === "AbortError") return [];
+                throw err;
             }
         };
 
         Promise.all([fetchDetails(), fetchMovies()])
             .then(([groupData, moviesData]) => {
+                if (!groupData) return; // aborted
                 setGroup(groupData);
                 setMovies(moviesData);
             })
             .catch((err) => {
-                setError(err.message || "An unexpected error occurred during loading.");
+                if (err.name === "AbortError") return;
+                setError(err.message || "Failed to load group.");
                 setGroup(null);
             })
             .finally(() => {
-                setLoading(false);
+                if (!signal.aborted) {
+                    setLoading(false);
+                }
             });
-            
+
+        return () => {
+            controller.abort();
+        };
     }, [groupId]);
 
     if (loading) {
@@ -95,7 +103,7 @@ export default function GroupPage() {
         );
     }
 
-    if (error || !group) { 
+    if (error || !group) {
         return (
             <div className="group-page-container">
                 <Link to="/groups" className="group-page-back">
@@ -114,7 +122,7 @@ export default function GroupPage() {
             </Link>
 
             <div className="group-header-info">
-                <h1>{group.name}</h1> 
+                <h1>{group.name}</h1>
                 <p className="group-owner">Owner: {group.owner_email}</p>
             </div>
 
@@ -131,16 +139,26 @@ export default function GroupPage() {
                 ) : (
                     <div className="movies-grid">
                         {movies.map((movie) => (
-                            <Link to={`/movie/${movie.tmdb_id}`} key={movie.tmdb_id} className="movie-card-link">
+                            <Link
+                                to={`/movie/${movie.tmdb_id}`}
+                                key={movie.tmdb_id}
+                                className="movie-card-link"
+                            >
                                 <div className="group-movie-card">
                                     {movie.poster_path ? (
-                                        <img src={movie.poster_path} alt={movie.title} className="movie-poster" />
+                                        <img
+                                            src={movie.poster_path}
+                                            alt={movie.title}
+                                            className="movie-poster"
+                                        />
                                     ) : (
                                         <div className="no-poster">No Image</div>
                                     )}
                                     <div className="movie-card-info">
                                         <h4>{movie.title}</h4>
-                                        <p className="movie-year">{movie.release_date?.slice(0, 4)}</p>
+                                        <p className="movie-year">
+                                            {movie.release_date?.slice(0, 4)}
+                                        </p>
                                     </div>
                                 </div>
                             </Link>
