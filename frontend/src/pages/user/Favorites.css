@@ -1,14 +1,17 @@
 .favorites-container {
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .favorites-title {
-  margin-top: 1rem;
+  margin: 1rem 0;
 }
 
 .favorites-search {
   padding: 0.5rem;
-  width: 250px;
+  width: 260px;
+  max-width: 100%;
   margin-top: 1rem;
 }
 
@@ -19,24 +22,44 @@
 .favorites-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+  gap: 1.25rem;
+  padding: 1rem;
   border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 10px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: #fff;
 }
 
 .favorites-poster {
-  width: 70px;
+  width: 110px;
   height: auto;
-  border-radius: 6px;
-  margin-right: 20px;
+  border-radius: 8px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
-.favorites-info {
-  margin-left: 20px;  
+.favorites-info { 
   flex: 1;
+}
+
+.favorites-info h3 {
+  margin: 0;
+}
+
+.favorites-rate-box, .avg-rating-component {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.favorites-rate-title {
+  margin: 6px 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.secondary-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .favorites-rating {
@@ -45,33 +68,27 @@
 .favorites-clickable {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
   color: inherit;
   text-decoration: none;
-  flex: 1;
 }
 
 .favorites-clickable:hover h3 {
   text-decoration: underline;
 }
-.favorites-item .avg-rating-component {
-  margin-right: 75px;
-}
 .favorites-rate-box {
   margin-right: 300px;
   text-align: center;
 }
-.favorites-rate-title {
-  margin: 6px 0 4px;
-  font-size: 16px;
-  font-weight: 600;
-}
 
 .share-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 1.25rem;
 }
 
 /* BUTTON STYLE */
@@ -104,4 +121,39 @@
   border-radius: 4px;
   border: 1px solid #ccc;
   background: #fafafa;
+}
+
+@media (max-width: 700px) {
+  .favorites-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .favorites-clickable {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .favorites-poster {
+    width: 100px;
+    margin: 0 auto;
+  }
+
+  .favorites-info {
+    text-align: center;
+  }
+
+  .favorites-rate-box,
+  .avg-rating-component {
+    margin: 0.5rem auto;
+  }
+
+  .secondary-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .favorites-search {
+    width: 100%;
+  }
 }
