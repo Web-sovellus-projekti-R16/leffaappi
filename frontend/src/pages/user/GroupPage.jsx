@@ -97,14 +97,14 @@ export default function GroupPage() {
     );
   }
 
-  if (error) {
+  if (error || !group) { 
     return (
       <div className="group-page-container">
         <Link to="/groups" className="group-page-back">
           ← Back to Groups List
         </Link>
         <h2>Error</h2>
-        <p>{error}</p>
+        <p>{error || "Group data is missing or could not be loaded."}</p>
       </div>
     );
   }
@@ -116,7 +116,7 @@ export default function GroupPage() {
       </Link>
       
       <div className="group-header-info">
-        <h1>{group.name}</h1>
+        <h1>{group.name}</h1> 
         <p className="group-owner">Owner: {group.owner_email}</p>
       </div>
 
@@ -155,4 +155,5 @@ export default function GroupPage() {
      
     </div>
   );
+
 }
