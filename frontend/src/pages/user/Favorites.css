@@ -57,9 +57,11 @@
 }
 
 .secondary-btn {
-  width: 10%;
+  padding: 0.5rem 0.9rem;
   white-space: nowrap;
   flex-shrink: 0;
+  align-self: center;
+  min-width: fit-content;
 }
 
 .favorites-rating {
@@ -144,6 +146,8 @@
   }
 
   .secondary-btn {
-    width: 40%;
+    align-self: center;
+    width: auto;
+    padding: 0.6rem 1.2rem;
   }
 }
