@@ -117,6 +117,7 @@
 }
 
 .favorites-item .secondary-btn {
+  width: auto;
   padding: 0.5rem 0.9rem;
   white-space: nowrap;
   flex-shrink: 0;
