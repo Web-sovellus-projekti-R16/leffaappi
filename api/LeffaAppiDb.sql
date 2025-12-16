@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS account CASCADE;
 DROP TABLE IF EXISTS account_group CASCADE;
+DROP TABLE IF EXISTS account_group_request CASCADE;
 DROP TABLE IF EXISTS "group" CASCADE;
 DROP TABLE IF EXISTS movie CASCADE;
+DROP TABLE IF EXISTS group_movie CASCADE;
 DROP TABLE IF EXISTS review CASCADE;
 
 CREATE TABLE account (
@@ -28,9 +30,24 @@ CREATE TABLE account_group (
 	UNIQUE (account_id, group_id)
 );
 
+CREATE TABLE account_group_request (
+    request_id SERIAL PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES "group"(group_id) ON DELETE CASCADE,
+    account_id INTEGER NOT NULL REFERENCES account(account_id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (group_id, account_id)
+);
+
 CREATE TABLE movie (
 	movie_id SERIAL PRIMARY KEY,
 	tmdb_id INT NOT NULL
+);
+
+CREATE TABLE group_movie (
+    group_id INTEGER NOT NULL REFERENCES "group"(group_id) ON DELETE CASCADE,
+    movie_id INTEGER NOT NULL, 
+    added_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (group_id, movie_id) 
 );
 
 CREATE TABLE review (
@@ -44,4 +61,3 @@ CREATE TABLE review (
     FOREIGN KEY (account_id) REFERENCES account(account_id) ON DELETE CASCADE,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 );
-

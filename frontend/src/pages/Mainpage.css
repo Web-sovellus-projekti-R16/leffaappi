@@ -42,3 +42,53 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 768px) {
+  .movie-page {
+    padding: 1rem;
+  }
+
+  .movie-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .poster-wrapper {
+    margin-right: 0;
+  }
+
+  .poster {
+    width: 180px;
+  }
+
+  .info {
+    text-align: center;
+  }
+
+  .overview {
+    text-align: left;
+  }
+
+  .meta {
+    font-size: 1rem;
+  }
+
+  .movie-action-buttons {
+    justify-content: center;
+  }
+
+  .favorite-add-btn,
+  .favorite-remove-btn {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .review-section textarea {
+    height: 90px;
+  }
+
+  .review-box {
+    max-width: 100%;
+  }
+}
