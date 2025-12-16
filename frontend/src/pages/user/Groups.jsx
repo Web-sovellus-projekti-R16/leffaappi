@@ -13,15 +13,15 @@ const getAuthHeaders = () => {
   }
   return {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`, 
+    Authorization: `Bearer ${token}`,
   };
 };
 
 export default function Groups() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedGroupId, setSelectedGroupId] = useState(""); 
-  
-  const [showRequestsModal, setShowRequestsModal] = useState(false); 
+  const [selectedGroupId, setSelectedGroupId] = useState("");
+
+  const [showRequestsModal, setShowRequestsModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
 
@@ -29,9 +29,18 @@ export default function Groups() {
   const [joinedGroups, setJoinedGroups] = useState([]);
   const [myGroups, setMyGroups] = useState([]);
 
+  const [statusMessage, setStatusMessage] = useState(null);
+
   useEffect(() => {
     fetchGroups();
   }, []);
+
+  const showStatus = (message) => {
+    setStatusMessage(message);
+    setTimeout(() => {
+      setStatusMessage(null);
+    }, 3000);
+  };
 
   const fetchGroups = async () => {
     const authHeaders = getAuthHeaders();
@@ -45,7 +54,7 @@ export default function Groups() {
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Server error fetching groups.");
+        showStatus(data.error || "Server error fetching groups.");
         return;
       }
 
@@ -55,77 +64,72 @@ export default function Groups() {
       const rawUserEmail = localStorage.getItem("email");
       const currentUserEmail = rawUserEmail ? rawUserEmail.toLowerCase() : "";
 
-      if (currentUserEmail === "") {
-        console.error("CRITICAL ERROR: User email not found in localStorage. Cannot filter groups.");
-        return; 
+      if (!currentUserEmail) {
+        console.error("User email missing from localStorage.");
+        return;
       }
-      
+
       const joined = [];
       const owned = [];
 
       for (const g of groups) {
-        const memRes = await fetch(`${import.meta.env.VITE_API_URL}/group/members/${g.group_id}`, {
-          method: "GET",
-          headers: authHeaders,
-        });
+        const memRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/group/members/${g.group_id}`,
+          {
+            method: "GET",
+            headers: authHeaders,
+          }
+        );
 
-        if (!memRes.ok) {
-             const errorText = await memRes.text();
-             console.error(`API Error fetching members for group ${g.group_id}: Status ${memRes.status}. Server response: ${errorText}`);
-             continue;
-        }
+        if (!memRes.ok) continue;
 
-        let memData;
-        try {
-            memData = await memRes.json();
-        } catch (jsonErr) {
-            console.error(`JSON Parse Error fetching members for group ${g.group_id}. Server did not return valid JSON.`, jsonErr);
-            continue;
-        }
-
-        const members = memData.members.map(m => m.member_email.toLowerCase());
+        const memData = await memRes.json();
+        const members = memData.members.map((m) =>
+          m.member_email.toLowerCase()
+        );
 
         if (members.includes(currentUserEmail)) joined.push(g);
-        
-        if (g.owner_email && g.owner_email.toLowerCase() === currentUserEmail) owned.push(g);
+        if (g.owner_email?.toLowerCase() === currentUserEmail) owned.push(g);
       }
 
       setJoinedGroups(joined);
       setMyGroups(owned);
-
     } catch (err) {
-      console.error("Failed to fetch groups or members:", err);
-      alert("Network/Server error.");
+      console.error("Failed to fetch groups:", err);
+      showStatus("Network or server error.");
     }
   };
 
   const handleSendJoinRequest = async (groupId) => {
     if (!groupId) {
-      alert("Select a group first.");
+      showStatus("Select a group first.");
       return;
     }
-    
+
     const authHeaders = getAuthHeaders();
     if (!authHeaders) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/group/join/request`, {
-        method: "POST",
-        headers: authHeaders,
-        body: JSON.stringify({ groupId: Number(groupId) })
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/group/join/request`,
+        {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ groupId: Number(groupId) }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Join request failed.");
+        showStatus(data.error || "Join request failed.");
         return;
       }
 
-      alert("Join request sent.");
+      showStatus("Join request sent.");
       fetchGroups();
     } catch (err) {
-      console.error("Failed to send join request:", err);
-      alert("Server error.");
+      console.error("Join request error:", err);
+      showStatus("Server error while sending request.");
     }
   };
 
@@ -138,54 +142,72 @@ export default function Groups() {
     if (!authHeaders) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/group/leave`, {
-        method: "POST",
-        headers: authHeaders,
-        body: JSON.stringify({ groupId })
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/group/leave`,
+        {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ groupId }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to leave group.");
+        showStatus(data.error || "Failed to leave group.");
         return;
       }
 
-      alert("Left group.");
+      showStatus("Left group.");
       fetchGroups();
     } catch (err) {
-      console.error("Failed to leave group:", err);
-      alert("Server error.");
+      console.error("Leave group error:", err);
+      showStatus("Server error while leaving group.");
     }
   };
 
   const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-  
-  const filteredGroups = availableGroups.filter(group => {
 
-    const isJoined = joinedGroups.some(g => g.group_id === group.group_id);
-    const isOwned = myGroups.some(g => g.group_id === group.group_id);
+  const filteredGroups = availableGroups.filter((group) => {
+    const isJoined = joinedGroups.some(
+      (g) => g.group_id === group.group_id
+    );
+    const isOwned = myGroups.some(
+      (g) => g.group_id === group.group_id
+    );
+
     if (isJoined || isOwned) return false;
 
     return group.name.toLowerCase().includes(normalizedSearchTerm);
   });
 
-
   return (
     <div className="groups-container">
-      
+      <Link to="/home" className="groups-back">
+        Back to Home
+      </Link>
+
       <div className="groups-header">
         <h2>Groups</h2>
-        <button type="button" className="primary-btn" onClick={handleCreateGroup}>
+        <button
+          type="button"
+          className="primary-btn"
+          onClick={handleCreateGroup}
+        >
           + Create Group
         </button>
       </div>
-      
-      {/*RENDER CREATE GROUP MODAL */}
+
+      {statusMessage && (
+        <div className="groups-status-message">
+          {statusMessage}
+        </div>
+      )}
+
       {showCreateGroupModal && (
-          <CreateGroupModal 
-              onClose={() => setShowCreateGroupModal(false)}
-              onGroupCreated={fetchGroups} 
-          />
+        <CreateGroupModal
+          onClose={() => setShowCreateGroupModal(false)}
+          onGroupCreated={fetchGroups}
+        />
       )}
 
       <div className="groups-search-wrapper">
@@ -194,23 +216,25 @@ export default function Groups() {
           placeholder="Search groups"
           className="groups-search"
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
       <h3 className="groups-section-title">Available Groups</h3>
       <div className="groups-box">
-        {/*Conditional rendering based on whether a search term exists */}
         {normalizedSearchTerm === "" ? (
           <p>Start typing in the search bar to find available groups.</p>
         ) : filteredGroups.length === 0 ? (
           <p>No groups found matching "{searchTerm}".</p>
         ) : (
           <ul className="groups-list">
-            {filteredGroups.map(g => (
+            {filteredGroups.map((g) => (
               <li key={g.group_id} className="groups-list-item">
                 <span>{g.name}</span>
-                <button type="button" onClick={() => handleSendJoinRequest(g.group_id)}>
+                <button
+                  type="button"
+                  onClick={() => handleSendJoinRequest(g.group_id)}
+                >
                   Join
                 </button>
               </li>
@@ -218,12 +242,11 @@ export default function Groups() {
           </ul>
         )}
       </div>
-      
-      {/* RENDER REQUESTS MODAL*/}
+
       {showRequestsModal && (
-        <JoinRequestsModal 
-          groupId={selectedGroupId} 
-          onClose={() => setShowRequestsModal(false)} 
+        <JoinRequestsModal
+          groupId={selectedGroupId}
+          onClose={() => setShowRequestsModal(false)}
         />
       )}
 
@@ -233,10 +256,14 @@ export default function Groups() {
           <p>No memberships yet.</p>
         ) : (
           <ul className="groups-list">
-            {joinedGroups.map(g => (
+            {joinedGroups.map((g) => (
               <li key={g.group_id} className="groups-list-item">
-                <span>{g.name}</span>
-                <button type="button" className="secondary-btn" onClick={() => handleLeaveGroup(g.group_id)}>
+                <Link to={`/groups/${g.group_id}`}>{g.name}</Link>
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  onClick={() => handleLeaveGroup(g.group_id)}
+                >
                   Leave
                 </button>
               </li>
@@ -251,12 +278,11 @@ export default function Groups() {
           <p>No owned groups.</p>
         ) : (
           <ul className="groups-list">
-            {myGroups.map(g => (
+            {myGroups.map((g) => (
               <li key={g.group_id} className="groups-list-item">
-                <span>{g.name}</span>
-                
-                {/* BUTTON TO MANAGE MEMBERS */}
-                <button 
+                <Link to={`/groups/${g.group_id}`}>{g.name}</Link>
+
+                <button
                   type="button"
                   className="primary-btn"
                   onClick={() => {
@@ -266,11 +292,10 @@ export default function Groups() {
                 >
                   Manage Members
                 </button>
-                
-                {/* BUTTON TO MANAGE JOIN REQUESTS */}
-                <button 
+
+                <button
                   type="button"
-                  className="primary-btn" 
+                  className="primary-btn"
                   onClick={() => {
                     setSelectedGroupId(g.group_id);
                     setShowRequestsModal(true);
@@ -284,11 +309,13 @@ export default function Groups() {
         )}
       </div>
 
-      {/* RENDER MEMBERS MODAL */}
       {showMembersModal && (
-        <MembersModal 
-          groupId={selectedGroupId} 
-          groupName={myGroups.find(g => g.group_id === selectedGroupId)?.name || 'Group'} 
+        <MembersModal
+          groupId={selectedGroupId}
+          groupName={
+            myGroups.find((g) => g.group_id === selectedGroupId)?.name ||
+            "Group"
+          }
           onClose={() => setShowMembersModal(false)}
           onMemberKicked={fetchGroups}
         />

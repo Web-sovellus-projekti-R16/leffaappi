@@ -9,16 +9,13 @@ describe("API Functional Tests", () => {
 
     before(async () => {
         server = app.listen(3001)
+        await initializeTestDb();
+        await insertTestUser(testUser)
     })
     
     after(async () => {
         await server.close()
     })
-
-    beforeEach(async () => {
-        await initializeTestDb();
-        await insertTestUser(testUser)
-    });
 
     it("should register a user successfully", async () => {
         const registerUser = { email: "use14@test.com", password: "Secret123" };

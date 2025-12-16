@@ -23,12 +23,17 @@
 }
 
 @media (min-width: 900px) {
+  .home-explorer-wrapper {
+    display: flex;
+    align-items: flex-start;
+  }
+
   .home-explorer-wrapper > *:first-child {
     flex: 3;
   }
 
   .home-explorer-wrapper > *:last-child {
-    flex: 2;
+    flex: 1;
   }
 }
 

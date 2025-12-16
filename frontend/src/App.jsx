@@ -17,6 +17,7 @@ import ConfirmDelete from "./pages/ConfirmDelete";
 import MoviePage from "./pages/MoviePage";
 import ShareFavs from "./pages/ShareFavs.jsx";
 import Footer from "./components/Footer";
+import GroupPage from "./pages/user/GroupPage";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
 
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
+          <Route path="/groups/:groupId" element={<ProtectedRoute><GroupPage /></ProtectedRoute>} /> 
           <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
           <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="/confirm-delete" element={<ProtectedRoute><ConfirmDelete /></ProtectedRoute>} />

@@ -10,6 +10,14 @@ const client = new S3Client({
     }
 })
 
+export const getSignedUrlFromKey = async (fileName) => {
+    const command = new GetObjectCommand({
+        Bucket: process.env.R2_BUCKET,
+        Key: fileName
+    })
+    return await getSignedUrl(client, command, { expiresIn: 3600 })
+}
+
 export const uploadToR2 = async (fileBuffer, fileName, contentType) => {
     const command = new PutObjectCommand({
         Bucket: process.env.R2_BUCKET,

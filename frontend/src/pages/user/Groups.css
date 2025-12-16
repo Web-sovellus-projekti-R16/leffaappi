@@ -88,63 +88,25 @@
   cursor: pointer;
 }
 
-@media (max-width: 600px) {
-  .groups-container {
-    padding: 1rem;
-    max-width: 100%;
-  }
+.groups-list-item a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
 
-  .groups-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
+.groups-list-item a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
 
-  .groups-create-btn {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 1rem;
-  }
-
-  .groups-search-wrapper {
-    justify-content: stretch;
-  }
-
-  .groups-search {
-    width: 100%;
-    font-size: 1rem;
-    padding: 0.8rem;
-  }
-
-  .groups-select-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .groups-select,
-  .groups-send-btn {
-    width: 100%;
-    padding: 0.8rem;
-  }
-
-  .groups-box {
-    padding: 0.75rem;
-  }
-
-  .groups-list-item {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-    padding: 1rem;
-    font-size: 1.05rem;
-  }
-
-  .groups-leave-btn,
-  .groups-manage-btn {
-    width: 100%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    text-align: center;
-  }
+.groups-status-message {
+  margin: 10px 0;
+  padding: 10px 14px;
+  background-color: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #b7dfc3;
+  border-radius: 4px;
+  font-size: 0.95em;
 }

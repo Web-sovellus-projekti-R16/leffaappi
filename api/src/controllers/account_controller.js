@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { uploadToR2, deleteFromR2 } from '../helpers/r2Service.js'
+import { uploadToR2, getSignedUrlFromKey, deleteFromR2 } from '../helpers/r2Service.js'
 import { insertAccount, 
         findAccountByEmail,
         updatePassword,
@@ -9,6 +9,7 @@ import { insertAccount,
         permanentlyDeleteExpiredAccounts,
         restoreAccount as restoreAccountModelm,
     insertImage, deleteImage } from '../models/account_model.js'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 export const createAccount = async (req, res) => {
     try {
@@ -189,20 +190,31 @@ export const deleteAccount = async (req, res) => {
 
 export const getProfile = async (req, res) => {
     try {
-        const { id, email } = req.user
+        const { email } = req.user
 
         const result = await findAccountByEmail(email)
         const account = result.rows[0]
+
+        let signedUrl = null
+        try {
+            if (account.profile_image_key) {
+                signedUrl = await getSignedUrlFromKey(account.profile_image_key)
+            }
+        } catch (err) {
+            console.error("R2 signed URL error:", err)
+            signedUrl = null
+        }
 
         res.json({
             message: "Profile retrieved",
             user: { 
                 id: account.account_id, 
                 email: account.email,
-                profile_image_url: account.profile_image_url || null
+                profile_image_url: signedUrl
             }
         })
     } catch (err) {
+        console.error("Profile fetch error:", err)
         res.status(500).json({ error: "Server error" })
     }
 }
@@ -292,13 +304,18 @@ export const uploadProfileImage = async (req, res) => {
 }
 
 export const deleteProfileImage = async (req, res) => {
-    const accountId = req.user.id
+    try {
+        const accountId = req.user.id
 
-    const imageKey = await deleteImage(accountId)
+        const imageKey = await deleteImage(accountId)
 
-    if (imageKey) {
-        await deleteFromR2(imageKey)
+        if (imageKey) {
+            await deleteFromR2(imageKey)
+        }
+
+        res.status(200).json({ message: "Profile image deleted" })
+    } catch (err) {
+        console.error("Delete profile image error:", err)
+        res.status(500).json({ error: "Server error" })
     }
-
-    res.status(201).json({ message: "Profile image deleted" })
 }

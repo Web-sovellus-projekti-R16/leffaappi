@@ -5,7 +5,6 @@ services:
     rootDir: frontend
     dockerfilePath: Dockerfile
     plan: starter
-    buildCommand: npm run build
     envVars:
       - key: VITE_API_URL
         value: https://leffa-api.onrender.com

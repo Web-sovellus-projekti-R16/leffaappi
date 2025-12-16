@@ -177,6 +177,45 @@ export default function Account() {
     }
   }
 
+  const handleDeleteProfileImage = async () => {
+    const confirmDelete = window.confirm("Remove profile picture?")
+    if (!confirmDelete) return
+
+    try {
+      const token = localStorage.getItem("token")
+
+      const result = await fetch(`${import.meta.env.VITE_API_URL}/account/profile-image`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        credentials: "include"
+      })
+
+      const data = await result.json()
+
+      if (!result.ok) {
+        setUploadMessage(data.error || "Failed to remove image")
+        return
+      }
+      setPreviewUrl(null)
+      setUploadedImage(null)
+
+      setProfile((prev) => ({
+        ...prev,
+        user: {
+          ...prev.user,
+          profile_image_url: null
+        }
+      }))
+
+      setUploadMessage("Profile picture removed")
+    } catch (err) {
+      console.error("Delete image error:", err)
+      setUploadMessage("Server error while deleting message")
+    }
+  }
+
   return (
     <div className="account-container">
 
@@ -207,6 +246,12 @@ export default function Account() {
               <button className="primary-btn" onClick={handleUploadImage} style={{ marginLeft: "1rem" }}>
                 Upload
               </button>
+            )}
+
+            {(previewUrl || profile?.user?.profile_image_url) && (
+              <button className="secondary-btn"
+                onClick={handleDeleteProfileImage}
+                style={{ marginLeft: "1rem" }}>Remove picture</button>
             )}
           </div>
           
