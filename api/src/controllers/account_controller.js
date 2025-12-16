@@ -313,7 +313,7 @@ export const deleteProfileImage = async (req, res) => {
             await deleteFromR2(imageKey)
         }
 
-        res.status(201).json({ message: "Profile image deleted" })
+        res.status(200).json({ message: "Profile image deleted" })
     } catch (err) {
         console.error("Delete profile image error:", err)
         res.status(500).json({ error: "Server error" })
