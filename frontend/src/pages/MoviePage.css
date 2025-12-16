@@ -172,3 +172,9 @@
     margin-top: 15px;
     flex-wrap: wrap;
 }
+
+@media (max-width: 600px) {
+    .favorite-add-btn {
+        margin-left: 2rem;
+    }
+}
