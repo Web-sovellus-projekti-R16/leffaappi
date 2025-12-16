@@ -84,68 +84,91 @@
     font-size: 0.8rem;
     color: #777;
 }
+
 .favorites-back {
     display: inline-block;
     margin-bottom: 1rem;
 }
+
 .avg-label {
-  font-size: 14px;
-  margin-bottom: 4px;
-  font-weight: 500;
-  color: #666;
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #666;
 }
+
 .review-box {
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  width: 100%;
-  max-width: 480px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+    max-width: 480px;
 }
 
 .review-box p {
-  margin: 4px 0;
+    margin: 4px 0;
 }
 
 .review-box strong {
-  font-size: 16px;
+    font-size: 16px;
 }
 
 .review-delete-btn {
-  margin-top: 8px;
-  padding: 5px 10px;
-  background: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .review-delete-btn:hover {
-  background: #e05555;
-}
-.poster-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 20px;
+    background: #e05555;
 }
 
-.favorite-add-btn,
-.favorite-remove-btn {
-  margin-top: 12px;
-  width: 150px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
+.poster-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
 }
+
+.favorite-add-btn {
+    background-color: #1b242e;
+    color: #fff;
+    border: #00a329 solid 2px;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 2rem;
+}
+
+.favorite-add-btn:hover {
+    background-color: #444;
+}
+
+
+.favorite-remove-btn {
+    background-color: #1b242e;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: #f55 solid 2px ;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.favorite-remove-btn:hover {
+    background-color: #444;
+}b
 
 .movie-action-buttons {
     display: flex;
     gap: 10px;
     margin-top: 15px;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
 }
-
