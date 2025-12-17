@@ -143,8 +143,8 @@
     border-radius: 1.5rem;
     cursor: pointer;
     font-weight: 500;
-    margin-top: 2rem;
 }
+
 
 .favorite-add-btn:hover {
     background-color: #444;
