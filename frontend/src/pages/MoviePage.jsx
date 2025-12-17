@@ -159,8 +159,10 @@ export default function MoviePage() {
           <p className="meta">Genres: {movie.genres.join(", ")}</p>
           <p className="meta">Languages: {movie.languages.join(", ")}</p>
           <p className="overview">{movie.overview}</p>
-          <p className="avg-label">Average reviews</p>
-          <AvgRating reviews={filterreviev} />
+          <div className="avg-rating">
+            <p className="avg-label">Average reviews</p>
+            <AvgRating reviews={filterreviev} />
+          </div>
 
           {token && (
             <div className="rating-wrapper">
