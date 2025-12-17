@@ -56,9 +56,7 @@
   font-weight: 600;
 }
 
-.favorites-rating {
-  margin-right: 200px; 
-}
+
 .favorites-clickable {
   display: flex;
   align-items: center;
@@ -73,7 +71,11 @@
   text-decoration: underline;
 }
 .favorites-rate-box {
-  margin-right: 300px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
