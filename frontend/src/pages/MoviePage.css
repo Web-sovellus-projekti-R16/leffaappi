@@ -92,10 +92,13 @@
 
 .avg-label {
     font-size: 14px;
-    margin-bottom: 4px;
     font-weight: 500;
     color: #666;
+    margin-top: 0;
+    margin-bottom: 2px;
+    line-height: 1;
 }
+
 
 .review-box {
     background: #f9f9f9;
@@ -143,8 +146,8 @@
     border-radius: 1.5rem;
     cursor: pointer;
     font-weight: 500;
-    margin-top: 2rem;
 }
+
 
 .favorite-add-btn:hover {
     background-color: #444;
@@ -164,17 +167,29 @@
 
 .favorite-remove-btn:hover {
     background-color: #444;
-}b
+}
 
 .movie-action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 @media (max-width: 600px) {
     .favorite-add-btn {
         margin-left: 2rem;
     }
+}
+
+.avg-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.avg-rating * {
+    justify-content: flex-start !important;
+    text-align: left !important;
 }
